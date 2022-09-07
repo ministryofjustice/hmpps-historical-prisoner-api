@@ -1,0 +1,27 @@
+server:
+  shutdown: immediate
+
+aws:
+  provider: localstack
+
+elasticsearch:
+  proxy:
+    url: http://es1.eu-west-2.es.localhost.localstack.cloud:4566
+
+api:
+  base:
+    url:
+      oauth: http://localhost:8090/auth
+
+oauth:
+  client:
+    id: prisoner-offender-search-client
+    secret: clientsecret
+
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: classpath:local-public-key.pub

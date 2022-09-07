@@ -49,3 +49,7 @@ management:
     info:
       cache:
         time-to-live: 2000ms
+
+elasticsearch:
+  proxy:
+    url: http://aws-es-proxy-service:9200

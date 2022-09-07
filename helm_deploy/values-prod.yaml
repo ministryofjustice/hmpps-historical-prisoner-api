@@ -5,7 +5,9 @@ generic-service:
   ingress:
     host: hmpps-historical-prisoner-api.hmpps.service.justice.gov.uk
 
-# CloudPlatform AlertManager receiver to route prometheus alerts to slack
-# See https://user-guide.cloud-platform.service.justice.gov.uk/documentation/monitoring-an-app/how-to-create-alarms.html#creating-your-own-custom-alerts
+  env:
+    API_BASE_URL_OAUTH: https://sign-in.hmpps.service.justice.gov.uk/auth
+
+# CloudPlatform AlertManager receiver to route promethues alerts to slack
 generic-prometheus-alerts:
-  alertSeverity: digital-prison-service
+  alertSeverity: hmpps_tech

@@ -1,19 +1,5 @@
 version: "3"
 services:
-  hmpps-historical-prisoner-api:
-    build:
-      context: .
-    network_mode: "host"
-    container_name: hmpps-historical-prisoner-api
-    ports:
-      - "8081:8080"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ping"]
-    environment:
-      - SERVER_PORT=8083
-      - SPRING_PROFILES_ACTIVE=dev
-      - API_BASE_URL_OAUTH=http://oauth:8080/auth
-
   localstack:
     image: localstack/localstack:0.14.2
     networks:
@@ -23,12 +9,11 @@ services:
       - "4566-4597:4566-4597"
       - 8999:8080
     environment:
-      - SERVICES=es,s3
+      - SERVICES=sqs,sns,es,elasticsearch
       - DEBUG=${DEBUG- }
       - DATA_DIR=/tmp/localstack/data
       - DOCKER_HOST=unix:///var/run/docker.sock
       - DEFAULT_REGION=eu-west-2
-      - HOSTNAME_EXTERNAL=${ES_HOSTNAME:-localstack}
     volumes:
       - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
