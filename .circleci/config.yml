@@ -15,7 +15,7 @@ jobs:
   validate:
     executor:
       name: hmpps/java
-      jdk_tag: "19.0"
+      tag: "19.0"
     steps:
       - checkout
       - restore_cache:
