@@ -1,4 +1,4 @@
-# hmpps-template-kotlin
+# hmpps-historical-prisoner-api
 
 This is a skeleton project from which to create new kotlin projects from.
 
