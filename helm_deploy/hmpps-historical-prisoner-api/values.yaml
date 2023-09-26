@@ -1,6 +1,7 @@
 ---
 generic-service:
   nameOverride: hmpps-historical-prisoner-api
+  productId: DPS065
 
   replicaCount: 4
 
