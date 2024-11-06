@@ -1,10 +1,6 @@
 version: 2.1
 orbs:
   hmpps: ministryofjustice/hmpps@10
-parameters:
-  releases-slack-channel:
-    type: string
-    default: SLACK_RELEASES_CHANNEL
 jobs:
   validate:
     executor:
@@ -71,7 +67,7 @@ workflows:
   #          pipeline_number: <<pipeline.number>>
   #          context:
   #            - hmpps-common-vars
-  #            - hmpps-template-kotlin-preprod
+  #            - hmpps-historical-prisoner-api-preprod
   #          requires:
   #            - request-preprod-approval
   #          helm_timeout: 5m
@@ -87,10 +83,9 @@ workflows:
   #          pipeline_id: <<pipeline.id>>
   #          pipeline_number: <<pipeline.number>>
   #          slack_notification: true
-  #          slack_channel_name: << pipeline.parameters.releases-slack-channel >>
   #          context:
   #            - hmpps-common-vars
-  #            - hmpps-template-kotlin-prod
+  #            - hmpps-historical-prisoner-api-prod
   #          requires:
   #            - request-prod-approval
   #          helm_timeout: 5m
