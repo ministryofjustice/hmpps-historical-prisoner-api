@@ -67,7 +67,7 @@ workflows:
   #          pipeline_number: <<pipeline.number>>
   #          context:
   #            - hmpps-common-vars
-  #            - hmpps-historical-prisoner-api-preprod
+  #            - hmpps-historical-prisoner-preprod
   #          requires:
   #            - request-preprod-approval
   #          helm_timeout: 5m
@@ -85,7 +85,7 @@ workflows:
   #          slack_notification: true
   #          context:
   #            - hmpps-common-vars
-  #            - hmpps-historical-prisoner-api-prod
+  #            - hmpps-historical-prisoner-prod
   #          requires:
   #            - request-prod-approval
   #          helm_timeout: 5m

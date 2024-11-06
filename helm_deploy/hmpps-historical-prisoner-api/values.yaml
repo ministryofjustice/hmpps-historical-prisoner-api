@@ -1,7 +1,6 @@
 generic-service:
   nameOverride: hmpps-historical-prisoner-api
-  productId: "DPS065" # productId for the product that this belongs too, i.e. DPS001, see README.md for details
-
+  productId: "DPS065"
   replicaCount: 4
 
   image:
@@ -14,24 +13,15 @@ generic-service:
     host: app-hostname.local # override per environment
     tlsSecretName: hmpps-historical-prisoner-api-cert
 
-  # Environment variables to load into the deployment
   env:
     JAVA_OPTS: "-Xmx512m"
     SERVER_PORT: "8080"
     APPLICATIONINSIGHTS_CONNECTION_STRING: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY)"
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json
 
-  # Pre-existing kubernetes secrets to load as environment variables in the deployment.
-  # namespace_secrets:
-  #   [name of kubernetes secret]:
-  #     [name of environment variable as seen by app]: [key of kubernetes secret to load]
-
   namespace_secrets:
     hmpps-historical-prisoner-api:
       APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
-      # Example client registration secrets
-      EXAMPLE_API_CLIENT_ID: "TEMPLATE_KOTLIN_API_CLIENT_ID"
-      EXAMPLE_API_CLIENT_SECRET: "TEMPLATE_KOTLIN_API_CLIENT_SECRET"
 
   allowlist:
     groups:
