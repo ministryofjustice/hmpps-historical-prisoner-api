@@ -1,2 +1,8 @@
 hmpps-auth:
   url: "http://localhost:8090/auth"
+
+spring:
+  datasource:
+    url: 'jdbc:h2:mem:iis-db;MODE=MSSQLServer'
+    username: iis
+    password: dummy
