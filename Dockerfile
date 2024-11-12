@@ -23,6 +23,10 @@ RUN ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime && echo "$TZ" > /etc/timezo
 RUN addgroup --gid 2000 --system appgroup && \
     adduser --uid 2000 --system appuser --gid 2000
 
+# Install AWS RDS Root cert into Java truststore
+ADD https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /tmp/bundle.pem
+RUN keytool -noprompt -cacerts -import -alias GlobalBundle -file /tmp/bundle.pem
+
 WORKDIR /app
 COPY --from=builder --chown=appuser:appgroup /app/build/libs/hmpps-historical-prisoner-api*.jar /app/app.jar
 COPY --from=builder --chown=appuser:appgroup /app/build/libs/applicationinsights-agent*.jar /app/agent.jar
