@@ -23,6 +23,11 @@ generic-service:
     hmpps-historical-prisoner-api:
       APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
 
+    rds-sqlserver-instance-output:
+      DATABASE_ENDPOINT: "DB_SERVER"
+      DATABASE_USERNAME: "DB_USER"
+      DATABASE_PASSWORD: "DB_PASS"
+
   allowlist:
     groups:
       - internal

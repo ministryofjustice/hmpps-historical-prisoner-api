@@ -13,6 +13,14 @@ spring:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
 
+  jpa:
+    properties.hibernate.default_schema: HPA
+
+  datasource:
+    url: 'jdbc:sqlserver://${DATABASE_ENDPOINT};databaseName=${DATABASE_NAME};encrypt=true'
+    username: '${DATABASE_USERNAME}'
+    password: '${DATABASE_PASSWORD}'
+
   security:
     oauth2:
       resourceserver:

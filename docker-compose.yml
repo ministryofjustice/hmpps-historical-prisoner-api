@@ -13,8 +13,6 @@ services:
     environment:
       - SERVER_PORT=8080
       - HMPPS_AUTH_URL=http://hmpps-auth:8080/auth
-      # TODO: Remove this URL and replace with outgoing service URLs
-      - EXAMPLE_URL=http://hmpps-historical-prisoner-api:8080
       - SPRING_PROFILES_ACTIVE=dev
 
   hmpps-auth:
@@ -30,6 +28,5 @@ services:
       - SERVER_PORT=8080
       - SPRING_PROFILES_ACTIVE=dev
       - APPLICATION_AUTHENTICATION_UI_ALLOWLIST=0.0.0.0/0
-
 networks:
   hmpps:
