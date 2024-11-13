@@ -11,7 +11,7 @@ generic-service:
   ingress:
     enabled: true
     host: app-hostname.local # override per environment
-    tlsSecretName: hmpps-historical-prisoner-api-cert
+    tlsSecretName: historical-prisoner-api-cert
 
   env:
     JAVA_OPTS: "-Xmx512m"

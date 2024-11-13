@@ -11,6 +11,7 @@ dependencies {
   runtimeOnly("com.microsoft.sqlserver:mssql-jdbc:12.8.1.jre11")
   runtimeOnly("com.zaxxer:HikariCP")
   runtimeOnly("com.h2database:h2:2.3.232")
+  runtimeOnly("org.flywaydb:flyway-sqlserver")
 
   implementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter:1.0.8")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
