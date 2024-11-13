@@ -7,7 +7,6 @@ import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
 import io.swagger.v3.oas.models.servers.Server
-import io.swagger.v3.oas.models.tags.Tag
 import org.springframework.boot.info.BuildProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -26,27 +25,17 @@ class OpenApiConfiguration(buildProperties: BuildProperties) {
         Server().url("http://localhost:8080").description("Local"),
       ),
     )
-    .tags(
-      listOf(
-        // TODO: Remove the Popular and Examples tag and start adding your own tags to group your resources
-        Tag().name("Popular")
-          .description("The most popular endpoints. Look here first when deciding which endpoint to use."),
-        Tag().name("Examples").description("Endpoints for searching for a prisoner within a prison"),
-      ),
-    )
     .info(
       Info().title("HMPPS Historical Prisoner Api").version(version)
         .contact(Contact().name("HMPPS Digital Studio").email("feedback@digital.justice.gov.uk")),
     )
-    // TODO: Remove the default security schema and start adding your own schemas and roles to describe your
-    // service authorisation requirements
     .components(
       Components().addSecuritySchemes(
-        "historical-prisoner-api-ui-role",
-        SecurityScheme().addBearerJwtRequirement("ROLE_TEMPLATE_KOTLIN__UI"),
+        "historical-prisoner-ui-role",
+        SecurityScheme().addBearerJwtRequirement("ROLE_HPA_USER"),
       ),
     )
-    .addSecurityItem(SecurityRequirement().addList("historical-prisoner-api-ui-role", listOf("read")))
+    .addSecurityItem(SecurityRequirement().addList("historical-prisoner-ui-role", listOf("read")))
 }
 
 private fun SecurityScheme.addBearerJwtRequirement(role: String): SecurityScheme =
