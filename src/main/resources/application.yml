@@ -17,7 +17,7 @@ spring:
     properties.hibernate.default_schema: HPA
 
   datasource:
-    url: 'jdbc:sqlserver://${DATABASE_ENDPOINT};databaseName=${DATABASE_NAME};encrypt=true;trustServerCertificate=true'
+    url: 'jdbc:sqlserver://${DATABASE_ENDPOINT};databaseName=${DATABASE_NAME};encrypt=true;clientCertificate=/app/global-bundle.pem'
     username: '${DATABASE_USERNAME}'
     password: '${DATABASE_PASSWORD}'
 
