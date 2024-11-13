@@ -10,7 +10,7 @@ hmpps-auth:
 
 spring:
   datasource:
-    url: 'jdbc:h2:mem:iis-db;MODE=MSSQLServer'
+    url: 'jdbc:h2:mem:iis-db;MODE=MSSQLServer;INIT=CREATE SCHEMA IF NOT EXISTS HPA'
     username: iis
     password: dummy
 

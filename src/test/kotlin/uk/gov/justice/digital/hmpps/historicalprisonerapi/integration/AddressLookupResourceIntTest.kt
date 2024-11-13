@@ -4,18 +4,17 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
 
-class ExampleResourceIntTest : IntegrationTestBase() {
+class AddressLookupResourceIntTest : IntegrationTestBase() {
 
   @Nested
-  @DisplayName("GET /example/time")
-  inner class TimeEndpoint {
+  @DisplayName("GET /address-lookup")
+  inner class AddressLookupEndpoint {
 
     @Test
     fun `should return unauthorized if no token`() {
       webTestClient.get()
-        .uri("/example/time")
+        .uri("/address-lookup")
         .exchange()
         .expectStatus()
         .isUnauthorized
@@ -24,7 +23,7 @@ class ExampleResourceIntTest : IntegrationTestBase() {
     @Test
     fun `should return forbidden if no role`() {
       webTestClient.get()
-        .uri("/example/time")
+        .uri("/address-lookup")
         .headers(setAuthorisation())
         .exchange()
         .expectStatus()
@@ -34,7 +33,7 @@ class ExampleResourceIntTest : IntegrationTestBase() {
     @Test
     fun `should return forbidden if wrong role`() {
       webTestClient.get()
-        .uri("/example/time")
+        .uri("/address-lookup")
         .headers(setAuthorisation(roles = listOf("ROLE_WRONG")))
         .exchange()
         .expectStatus()
@@ -44,14 +43,14 @@ class ExampleResourceIntTest : IntegrationTestBase() {
     @Test
     fun `should return OK`() {
       webTestClient.get()
-        .uri("/example/time")
-        .headers(setAuthorisation(roles = listOf("ROLE_TEMPLATE_KOTLIN__UI")))
+        .uri("/address-lookup?addressTerms=John,Smith")
+        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
         .exchange()
         .expectStatus()
         .isOk
         .expectBody()
-        .jsonPath("$").value<String> {
-          assertThat(it).startsWith("${LocalDate.now()}")
+        .jsonPath("$").value<List<String>> {
+          assertThat(it).containsExactlyInAnyOrder("AB111111", "AB111112", "BF123451", "BF123452", "BF123453", "BF123454")
         }
     }
   }

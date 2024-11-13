@@ -5,31 +5,25 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
-import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.historicalprisonerapi.service.ExampleApiService
+import uk.gov.justice.digital.hmpps.historicalprisonerapi.service.AddressLookupService
 import uk.gov.justice.hmpps.kotlin.common.ErrorResponse
-import java.time.LocalDateTime
 
-// This controller is expected to be called from the UI - so the hmpps-template-typescript project.
-// TODO: This is an example and should renamed / replaced
 @RestController
-// Role here is specific to the UI.
-@PreAuthorize("hasRole('ROLE_TEMPLATE_KOTLIN__UI')")
-@RequestMapping(value = ["/example"], produces = ["application/json"])
-class ExampleResource(private val exampleApiService: ExampleApiService) {
+@PreAuthorize("hasRole('ROLE_HPA_USER')")
+@RequestMapping(value = ["/address-lookup"], produces = ["application/json"])
+class AddressLookupResource(private val addressLookupService: AddressLookupService) {
 
-  @GetMapping("/time")
-  @Tag(name = "Examples")
+  @GetMapping
   @Operation(
-    summary = "Retrieve today's date and time",
-    description = "This is an example endpoint that calls a service to return the current date and time. Requires role ROLE_TEMPLATE_KOTLIN__UI",
-    security = [SecurityRequirement(name = "historical-prisoner-api-ui-role")],
+    summary = "Retrieve prisoner numbers from address terms",
+    description = "Requires role ROLE_HPA_USER",
+    security = [SecurityRequirement(name = "historical-prisoner-ui-role")],
     responses = [
-      ApiResponse(responseCode = "200", description = "today's date and time"),
+      ApiResponse(responseCode = "200", description = "list of prisoner numbers"),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
@@ -42,5 +36,5 @@ class ExampleResource(private val exampleApiService: ExampleApiService) {
       ),
     ],
   )
-  fun getTime(): LocalDateTime = exampleApiService.getTime()
+  fun findPrisonersWithAddresses(addressTerms: String): List<String> = addressLookupService.findPrisonersWithAddresses(addressTerms)
 }
