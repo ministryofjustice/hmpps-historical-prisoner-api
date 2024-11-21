@@ -26,13 +26,11 @@ generic-service:
   env:
     JAVA_OPTS: "-Xmx512m"
     SERVER_PORT: "8080"
-    APPLICATIONINSIGHTS_CONNECTION_STRING: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY)"
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json
 
   namespace_secrets:
-    hmpps-historical-prisoner-api:
-      APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
-
+    application-insights:
+      APPLICATIONINSIGHTS_CONNECTION_STRING: "APPLICATIONINSIGHTS_CONNECTION_STRING"
     rds-sqlserver-instance-output:
       DATABASE_ENDPOINT: "DB_SERVER"
       DATABASE_USERNAME: "DB_USER"
