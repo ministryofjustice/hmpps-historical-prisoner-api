@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.historicalprisonerapi.resource
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -42,14 +43,14 @@ class PrisonerSearchResource(private val prisonerSearchService: PrisonerSearchSe
     ],
   )
   fun findPrisoners(
-    forename: String?,
-    surname: String?,
-    dateOfBirth: LocalDate?,
-    ageFrom: Int?,
-    ageTo: Int?,
-    gender: Char?,
-    hdc: Boolean?,
-    lifer: Boolean?,
+    @Parameter(description = "Forename to search for. Wildcards (%) can be used. A single initial will automatically be wildcarded.") forename: String?,
+    @Parameter(description = "Surname to search for. Wildcards (%) can be used.") surname: String?,
+    @Parameter(description = "Date of birth to search for") dateOfBirth: LocalDate?,
+    @Parameter(description = "Age from which to search for.  If no ageTo is provided then ageFrom is used as ageTo as well.") ageFrom: Int?,
+    @Parameter(description = "Age to which to search for.  Must be used in combination with ageFrom.") ageTo: Int?,
+    @Parameter(description = "Gender to search for. Must be used in combination with forename, surname, dateOfBirth or ageFrom.") gender: Char?,
+    @Parameter(description = "Whether the prisoner has a HDC. Must be used in combination with forename, surname, dateOfBirth or ageFrom.") hdc: Boolean?,
+    @Parameter(description = "Whether the prisoner is a lifer. Must be used in combination with forename, surname, dateOfBirth or ageFrom.") lifer: Boolean?,
     pageRequest: Pageable,
   ): Page<Prisoner> {
     if (forename.isNullOrBlank() && surname.isNullOrBlank() && dateOfBirth == null && ageFrom == null) {

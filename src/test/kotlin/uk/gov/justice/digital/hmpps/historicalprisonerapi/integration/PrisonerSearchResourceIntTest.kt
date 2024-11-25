@@ -200,8 +200,9 @@ class PrisonerSearchResourceIntTest : IntegrationTestBase() {
 
     @Test
     fun `should search by all terms`() {
+      val age = LocalDate.now().year - LocalDate.parse("1980-01-01").year
       webTestClient.get()
-        .uri("/search?surname=Surn%&forename=F&dateOfBirth=1980-01-01&age=40&gender=M&hdc=true&lifer=true")
+        .uri("/search?surname=Surn%&forename=F&dateOfBirth=1980-01-01&ageFrom=$age&ageTo=$age&gender=M&hdc=true&lifer=true")
         .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
         .exchange()
         .expectStatus()
@@ -225,7 +226,7 @@ class PrisonerSearchResourceIntTest : IntegrationTestBase() {
     @Test
     fun `should return bad request when terms all blank`() {
       webTestClient.get()
-        .uri("/search?forename= &surname= &age= ")
+        .uri("/search?forename= &surname= ")
         .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
         .exchange()
         .expectStatus()
