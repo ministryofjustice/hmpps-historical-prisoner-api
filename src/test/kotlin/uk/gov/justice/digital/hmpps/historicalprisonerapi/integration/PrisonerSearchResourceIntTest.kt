@@ -232,5 +232,45 @@ class PrisonerSearchResourceIntTest : IntegrationTestBase() {
         .expectStatus()
         .isBadRequest
     }
+
+    @Test
+    fun `should only return specific fields`() {
+      webTestClient.get()
+        .uri("/search?forename=f&hdc=true")
+        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
+        .exchange()
+        .expectStatus()
+        .isOk
+        .expectBody()
+        .jsonPath("$.content.[0].prisonNumber").isEqualTo("AB111111")
+        .jsonPath("$.content.[0].receptionDate").isEqualTo("1999-01-01")
+        .jsonPath("$.content.[0].primarySurname").isEqualTo("SURNAMEA")
+        .jsonPath("$.content.[0].primaryForename1").isEqualTo("FIRSTA")
+        .jsonPath("$.content.[0].primaryForename2").isEqualTo("MIDDLEA")
+        .jsonPath("$.content.[0].primaryBirthDate").isEqualTo("1980-01-01")
+        .jsonPath("$.content.[0].isAlias").isEqualTo("false")
+        .jsonPath("$.content.[0].surname").isEqualTo("SURNAMEA")
+        .jsonPath("$.content.[0].forename1").isEqualTo("FIRSTA")
+        .jsonPath("$.content.[0].forename2").isEqualTo("MIDDLEA")
+    }
+
+    @Test
+    fun `should not return ignored fields`() {
+      webTestClient.get()
+        .uri("/search?forename=f&hdc=true")
+        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
+        .exchange()
+        .expectStatus()
+        .isOk
+        .expectBody()
+        .jsonPath("$.content.[0].id").doesNotExist()
+        .jsonPath("$.content.[0].personIdentifier").doesNotExist()
+        .jsonPath("$.content.[0].birthDate").doesNotExist()
+        .jsonPath("$.content.[0].sex").doesNotExist()
+        .jsonPath("$.content.[0].pncNumber").doesNotExist()
+        .jsonPath("$.content.[0].croNumber").doesNotExist()
+        .jsonPath("$.content.[0].hasHdc").doesNotExist()
+        .jsonPath("$.content.[0].isLifer").doesNotExist()
+    }
   }
 }
