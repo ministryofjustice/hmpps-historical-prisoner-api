@@ -25,7 +25,11 @@ class PrisonerDetailResource(private val prisonerDetailService: PrisonerDetailSe
     description = "Requires role ROLE_HPA_USER",
     security = [SecurityRequirement(name = "historical-prisoner-ui-role")],
     responses = [
-      ApiResponse(responseCode = "200", description = "prisoner detail", content = [Content(mediaType = "application/json", schema = Schema(implementation = PrisonerDetailDto::class))]),
+      ApiResponse(
+        responseCode = "200",
+        description = "prisoner detail",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = PrisonerDetailDto::class))],
+      ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
@@ -34,6 +38,11 @@ class PrisonerDetailResource(private val prisonerDetailService: PrisonerDetailSe
       ApiResponse(
         responseCode = "403",
         description = "Forbidden to access this endpoint",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Prisoner not found",
         content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
     ],
