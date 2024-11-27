@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.historicalprisonerapi.config
 
+import jakarta.persistence.EntityNotFoundException
 import jakarta.validation.ValidationException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus.BAD_REQUEST
@@ -14,7 +15,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException
 import uk.gov.justice.hmpps.kotlin.common.ErrorResponse
 
 @RestControllerAdvice
-class HmppsHistoricalPrisonerApiExceptionHandler {
+class ExceptionHandler {
   @ExceptionHandler(ValidationException::class)
   fun handleValidationException(e: ValidationException): ResponseEntity<ErrorResponse> = ResponseEntity
     .status(BAD_REQUEST)
@@ -36,6 +37,17 @@ class HmppsHistoricalPrisonerApiExceptionHandler {
         developerMessage = e.message,
       ),
     ).also { log.info("No resource found exception: {}", e.message) }
+
+  @ExceptionHandler(EntityNotFoundException::class)
+  fun handleNoResourceFoundException(e: EntityNotFoundException): ResponseEntity<ErrorResponse> = ResponseEntity
+    .status(NOT_FOUND)
+    .body(
+      ErrorResponse(
+        status = NOT_FOUND,
+        userMessage = "No entity found failure: ${e.message}",
+        developerMessage = e.message,
+      ),
+    ).also { log.info("No entity found exception: {}", e.message) }
 
   @ExceptionHandler(AccessDeniedException::class)
   fun handleAccessDeniedException(e: AccessDeniedException): ResponseEntity<ErrorResponse> = ResponseEntity

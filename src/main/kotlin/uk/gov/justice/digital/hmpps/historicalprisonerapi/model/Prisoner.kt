@@ -19,17 +19,17 @@ data class Prisoner(
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "PK_PRISONER", nullable = false)
   @JsonIgnore
-  val id: Int? = null,
+  val id: Int,
 
   @Size(max = 8)
   @NotNull
   @Column(name = "PRISON_NUMBER", nullable = false, length = 8)
-  val prisonNumber: String? = null,
+  val prisonNumber: String,
 
   @NotNull
   @Column(name = "PERSON_IDENTIFIER", nullable = false, precision = 10)
   @JsonIgnore
-  val personIdentifier: BigDecimal? = null,
+  val personIdentifier: BigDecimal,
 
   @Size(max = 24)
   @Column(name = "SURNAME", length = 24)
@@ -49,7 +49,7 @@ data class Prisoner(
 
   @NotNull
   @Column(name = "IS_ALIAS", nullable = false)
-  val isAlias: Boolean? = false,
+  val isAlias: Boolean,
 
   @Column(name = "SEX")
   @JsonIgnore
@@ -68,12 +68,12 @@ data class Prisoner(
   @NotNull
   @Column(name = "HAS_HDC", nullable = false)
   @JsonIgnore
-  val hasHdc: Boolean? = false,
+  val hasHdc: Boolean,
 
   @NotNull
   @Column(name = "IS_LIFER", nullable = false)
   @JsonIgnore
-  val isLifer: Boolean? = false,
+  val isLifer: Boolean,
 
   @Column(name = "RECEPTION_DATE")
   val receptionDate: LocalDate? = null,
