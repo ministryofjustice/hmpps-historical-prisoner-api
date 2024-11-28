@@ -57,6 +57,20 @@ class PrisonerSearchResourceIntTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `should search by forename in uppercase and trimmed`() {
+      webTestClient.get()
+        .uri("/search?forename= george  ")
+        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
+        .exchange()
+        .expectStatus()
+        .isOk
+        .expectBody()
+        .jsonPath("$.content").value<List<Prisoner>> {
+          assertThat(it).hasSize(3).extracting("prisonNumber").containsOnly("BF123451", "BF123454", "BF123459")
+        }
+    }
+
+    @Test
     fun `should search by forename with wildcard`() {
       webTestClient.get()
         .uri("/search?forename=Geor%")
@@ -99,6 +113,20 @@ class PrisonerSearchResourceIntTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `should search by surname in uppercase and trimmed`() {
+      webTestClient.get()
+        .uri("/search?surname= wilson  ")
+        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
+        .exchange()
+        .expectStatus()
+        .isOk
+        .expectBody()
+        .jsonPath("$.content").value<List<Prisoner>> {
+          assertThat(it).hasSize(2).extracting("prisonNumber").containsOnly("BF123455")
+        }
+    }
+
+    @Test
     fun `should search by surname with wildcard`() {
       webTestClient.get()
         .uri("/search?surname=wils%")
@@ -116,6 +144,20 @@ class PrisonerSearchResourceIntTest : IntegrationTestBase() {
     fun `should search by date of birth`() {
       webTestClient.get()
         .uri("/search?dateOfBirth=1967-01-01")
+        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
+        .exchange()
+        .expectStatus()
+        .isOk
+        .expectBody()
+        .jsonPath("$.content").value<List<Prisoner>> {
+          assertThat(it).hasSize(4).extracting("prisonNumber").containsOnly("BF123451", "BF123459")
+        }
+    }
+
+    @Test
+    fun `should ignore forename and surname in search if blank`() {
+      webTestClient.get()
+        .uri("/search?dateOfBirth=1967-01-01&forename= &surname= ")
         .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
         .exchange()
         .expectStatus()

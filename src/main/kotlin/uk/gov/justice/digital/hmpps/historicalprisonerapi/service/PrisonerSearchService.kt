@@ -24,9 +24,9 @@ class PrisonerSearchService(private val prisonerRepository: PrisonerRepository) 
   ): Specification<Prisoner> =
     Specification { root: Root<Prisoner>, _: CriteriaQuery<*>?, builder: CriteriaBuilder ->
       val predicates = mutableListOf<Predicate>()
-      prisonNumber?.run { predicates.add(builder.equal(root.get<String>("prisonNumber"), prisonNumber)) }
-      pnc?.run { predicates.add(builder.equal(root.get<String>("pncNumber"), pnc)) }
-      cro?.run { predicates.add(builder.equal(root.get<String>("croNumber"), cro)) }
+      prisonNumber?.uppercaseTrimToNull()?.run { predicates.add(builder.equal(root.get<String>("prisonNumber"), this)) }
+      pnc?.uppercaseTrimToNull()?.run { predicates.add(builder.equal(root.get<String>("pncNumber"), this)) }
+      cro?.uppercaseTrimToNull()?.run { predicates.add(builder.equal(root.get<String>("croNumber"), this)) }
       builder.and(*predicates.toTypedArray())
     }
 
@@ -36,7 +36,7 @@ class PrisonerSearchService(private val prisonerRepository: PrisonerRepository) 
     dateOfBirth: LocalDate?,
     ageFrom: Int?,
     ageTo: Int?,
-    gender: Char?,
+    gender: String?,
     hdc: Boolean?,
     lifer: Boolean?,
     pageRequest: Pageable,
@@ -46,19 +46,21 @@ class PrisonerSearchService(private val prisonerRepository: PrisonerRepository) 
       pageRequest,
     )
 
+  private fun String.uppercaseTrimToNull() = this.uppercase().trim().ifBlank { null }
+
   private fun createDetailsSpecification(
     forename: String?,
     surname: String?,
     dateOfBirth: LocalDate?,
     ageFrom: Int?,
     ageTo: Int?,
-    gender: Char?,
+    gender: String?,
     hdc: Boolean?,
     lifer: Boolean?,
   ): Specification<Prisoner> =
     Specification { root: Root<Prisoner>, _: CriteriaQuery<*>?, builder: CriteriaBuilder ->
       val predicates = mutableListOf<Predicate>()
-      forename?.uppercase()?.run {
+      forename?.uppercaseTrimToNull()?.run {
         if (this.contains("%")) {
           predicates.add(builder.like(root.get("forename1"), this))
         } else if (this.length == 1) {
@@ -67,7 +69,7 @@ class PrisonerSearchService(private val prisonerRepository: PrisonerRepository) 
           predicates.add(builder.equal(root.get<String>("forename1"), this))
         }
       }
-      surname?.uppercase()?.run {
+      surname?.uppercaseTrimToNull()?.run {
         if (this.contains("%")) {
           predicates.add(builder.like(root.get("surname"), this))
         } else {
@@ -81,7 +83,7 @@ class PrisonerSearchService(private val prisonerRepository: PrisonerRepository) 
         val birthDateTo = currentDate.minusYears(ageFrom.toLong())
         predicates.add(builder.between(root.get("birthDate"), birthDateFrom, birthDateTo))
       }
-      gender?.uppercase()?.run { predicates.add(builder.equal(root.get<Char>("sex"), this)) }
+      gender?.uppercaseTrimToNull()?.run { predicates.add(builder.equal(root.get<Char>("sex"), this)) }
       hdc?.run { predicates.add(builder.equal(root.get<Boolean>("hasHdc"), hdc)) }
       lifer?.run { predicates.add(builder.equal(root.get<Boolean>("isLifer"), lifer)) }
       builder.and(*predicates.toTypedArray())
