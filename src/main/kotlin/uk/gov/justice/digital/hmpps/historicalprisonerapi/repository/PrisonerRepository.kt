@@ -17,11 +17,21 @@ interface PrisonerRepository : JpaRepository<Prisoner, Int>, JpaSpecificationExe
     """
     $SELECT_CLAUSE
       FROM HPA.PRISONERS
-      WHERE (:prisonNumber is null or PRISON_NUMBER = :prisonNumber)
-        AND (:pnc is null or PNC_NUMBER = :pnc)
-        AND (:cro is null or CRO_NUMBER = :cro)
-  )
-  $WHERE_ORDER_CLAUSE""",
+     WHERE (:prisonNumber is null or PRISON_NUMBER = :prisonNumber)
+       AND (:pnc is null or PNC_NUMBER = :pnc)
+       AND (:cro is null or CRO_NUMBER = :cro)
+    ) NUMBERED_ROWS
+    $WHERE_ORDER_CLAUSE
+    """,
+    countQuery = """
+    $SELECT_COUNT_CLUSE
+      FROM HPA.PRISONERS
+     WHERE (:prisonNumber is null or PRISON_NUMBER = :prisonNumber)
+       AND (:pnc is null or PNC_NUMBER = :pnc)
+       AND (:cro is null or CRO_NUMBER = :cro)
+    ) NUMBERED_ROWS
+    WHERE ROW_NUM = 1
+    """,
     nativeQuery = true,
   )
   fun findByIdentifiers(prisonNumber: String?, pnc: String?, cro: String?, pageRequest: Pageable): Page<PrisonerSearchDto>
@@ -29,18 +39,33 @@ interface PrisonerRepository : JpaRepository<Prisoner, Int>, JpaSpecificationExe
   @Query(
     """
     $SELECT_CLAUSE
-  FROM HPA.PRISONERS
-    WHERE (:forename is null or FORENAME_1 = :forename)
-      AND (:forenameWithWildcard is null or FORENAME_1 like :forenameWithWildcard)
-      AND (:surname is null or SURNAME = :surname)
-      AND (:surnameWithWildcard is null or SURNAME like :surnameWithWildcard)
-      AND (:birthDateFrom is null or BIRTH_DATE >= :birthDateFrom)
-      AND (:birthDateTo is null or BIRTH_DATE <= :birthDateTo)
-      AND (:gender is null or SEX = :gender)
-      AND (:hdc is null or HAS_HDC = :hdc)
-      AND (:lifer is null or IS_LIFER = :lifer)
-  )
-  $WHERE_ORDER_CLAUSE""",
+      FROM HPA.PRISONERS
+     WHERE (:forename is null or FORENAME_1 = :forename)
+       AND (:forenameWithWildcard is null or FORENAME_1 like :forenameWithWildcard)
+       AND (:surname is null or SURNAME = :surname)
+       AND (:surnameWithWildcard is null or SURNAME like :surnameWithWildcard)
+       AND (:birthDateFrom is null or BIRTH_DATE >= :birthDateFrom)
+       AND (:birthDateTo is null or BIRTH_DATE <= :birthDateTo)
+       AND (:gender is null or SEX = :gender)
+       AND (:hdc is null or HAS_HDC = :hdc)
+       AND (:lifer is null or IS_LIFER = :lifer)
+    ) NUMBERED_ROWS
+    $WHERE_ORDER_CLAUSE""",
+    countQuery = """
+    $SELECT_COUNT_CLUSE
+      FROM HPA.PRISONERS
+     WHERE (:forename is null or FORENAME_1 = :forename)
+       AND (:forenameWithWildcard is null or FORENAME_1 like :forenameWithWildcard)
+       AND (:surname is null or SURNAME = :surname)
+       AND (:surnameWithWildcard is null or SURNAME like :surnameWithWildcard)
+       AND (:birthDateFrom is null or BIRTH_DATE >= :birthDateFrom)
+       AND (:birthDateTo is null or BIRTH_DATE <= :birthDateTo)
+       AND (:gender is null or SEX = :gender)
+       AND (:hdc is null or HAS_HDC = :hdc)
+       AND (:lifer is null or IS_LIFER = :lifer)
+    ) NUMBERED_ROWS
+    WHERE ROW_NUM = 1
+    """,
     nativeQuery = true,
   )
   fun findByDetails(
@@ -62,11 +87,20 @@ interface PrisonerRepository : JpaRepository<Prisoner, Int>, JpaSpecificationExe
     """
     $SELECT_CLAUSE
       FROM HPA.PRISONERS
-      WHERE PRISON_NUMBER IN (
-        SELECT DISTINCT PRISON_NUMBER FROM HPA.ADDRESS_LOOKUP WHERE CONTAINS(ADDRESS_TEXT, :addressTerms)
-      )
-  )
+     WHERE PRISON_NUMBER IN (
+       SELECT DISTINCT PRISON_NUMBER FROM HPA.ADDRESS_LOOKUP WHERE CONTAINS(ADDRESS_TEXT, :addressTerms)
+     )
+    ) NUMBERED_ROWS
   $WHERE_ORDER_CLAUSE""",
+    countQuery = """
+    $SELECT_COUNT_CLUSE
+      FROM HPA.PRISONERS
+     WHERE PRISON_NUMBER IN (
+       SELECT DISTINCT PRISON_NUMBER FROM HPA.ADDRESS_LOOKUP WHERE CONTAINS(ADDRESS_TEXT, :addressTerms)
+     )
+    ) NUMBERED_ROWS
+    WHERE ROW_NUM = 1
+    """,
     nativeQuery = true,
   )
   fun findByAddresses(addressTerms: String, pageRequest: Pageable): Page<PrisonerSearchDto>
@@ -89,6 +123,15 @@ interface PrisonerRepository : JpaRepository<Prisoner, Int>, JpaSpecificationExe
           OVER ( PARTITION BY PRISON_NUMBER
           ORDER BY (IS_ALIAS) ) ROW_NUM,
       *"""
+    const val SELECT_COUNT_CLUSE = """
+      SELECT COUNT(*) As totalRows
+        FROM (
+               SELECT
+                 row_number()
+                 OVER ( PARTITION BY PRISON_NUMBER
+                   ORDER BY (IS_ALIAS) ) ROW_NUM,
+                 *
+    """
     const val WHERE_ORDER_CLAUSE = """
       WHERE ROW_NUM = 1
       ORDER BY IS_ALIAS, PRIMARY_SURNAME, PRIMARY_INITIAL, BIRTH_DATE, RECEPTION_DATE DESC
