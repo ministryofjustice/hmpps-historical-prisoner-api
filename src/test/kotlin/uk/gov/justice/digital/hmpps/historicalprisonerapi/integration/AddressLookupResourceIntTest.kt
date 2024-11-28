@@ -49,7 +49,7 @@ class AddressLookupResourceIntTest : IntegrationTestBase() {
         .expectStatus()
         .isOk
         .expectBody()
-        .jsonPath("$").value<List<String>> {
+        .jsonPath("$.content.[*].prisonNumber").value<List<String>> {
           assertThat(it).containsExactlyInAnyOrder("AB111111", "AB111112", "BF123451", "BF123452", "BF123453", "BF123454")
         }
     }
