@@ -1,9 +1,91 @@
 package uk.gov.justice.digital.hmpps.historicalprisonerapi.repository
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
+import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.Prisoner
+import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.PrisonerSearchDto
+import java.time.LocalDate
 
 @Repository
-interface PrisonerRepository : JpaRepository<Prisoner, Int>, JpaSpecificationExecutor<Prisoner>
+interface PrisonerRepository : JpaRepository<Prisoner, Int>, JpaSpecificationExecutor<Prisoner> {
+  @Query(
+    """
+    SELECT  PRISON_NUMBER      AS prisonNumber,
+            RECEPTION_DATE     AS receptionDate,
+            PRIMARY_SURNAME    AS lastName,
+            PRIMARY_FORENAME_1 AS firstName,
+            PRIMARY_FORENAME_2 AS middleName,
+            PRIMARY_BIRTH_DATE AS dob,
+            IS_ALIAS           AS isAlias,
+            SURNAME            AS aliasLast,
+            FORENAME_1         AS aliasFirst,
+            FORENAME_2         AS aliasMiddle
+      FROM (
+      SELECT
+        row_number()
+        OVER ( PARTITION BY PRISON_NUMBER
+        ORDER BY (IS_ALIAS) ) ROW_NUM,
+    *
+    FROM HPA.PRISONERS
+      WHERE (:prisonNumber is null or PRISON_NUMBER = :prisonNumber)
+        AND (:pnc is null or PNC_NUMBER = :pnc)
+        AND (:cro is null or CRO_NUMBER = :cro)
+  )
+  WHERE ROW_NUM = 1
+  ORDER BY IS_ALIAS, PRIMARY_SURNAME, PRIMARY_INITIAL, BIRTH_DATE, RECEPTION_DATE DESC""",
+    nativeQuery = true,
+  )
+  fun findByIdentifiers(prisonNumber: String?, pnc: String?, cro: String?, pageRequest: Pageable): Page<PrisonerSearchDto>
+
+  @Query(
+    """
+    SELECT  PRISON_NUMBER      AS prisonNumber,
+            RECEPTION_DATE     AS receptionDate,
+            PRIMARY_SURNAME    AS lastName,
+            PRIMARY_FORENAME_1 AS firstName,
+            PRIMARY_FORENAME_2 AS middleName,
+            PRIMARY_BIRTH_DATE AS dob,
+            IS_ALIAS           AS isAlias,
+            SURNAME            AS aliasLast,
+            FORENAME_1         AS aliasFirst,
+            FORENAME_2         AS aliasMiddle
+    FROM (
+    SELECT
+      row_number()
+      OVER ( PARTITION BY PRISON_NUMBER
+      ORDER BY (IS_ALIAS) ) ROW_NUM,
+  *
+  FROM HPA.PRISONERS
+    WHERE (:forename is null or FORENAME_1 = :forename)
+      AND (:forenameWithWildcard is null or FORENAME_1 like :forenameWithWildcard)
+      AND (:surname is null or SURNAME = :surname)
+      AND (:surnameWithWildcard is null or SURNAME like :surnameWithWildcard)
+      AND (:birthDateFrom is null or BIRTH_DATE >= :birthDateFrom)
+      AND (:birthDateTo is null or BIRTH_DATE <= :birthDateTo)
+      AND (:gender is null or SEX = :gender)
+      AND (:hdc is null or HAS_HDC = :hdc)
+      AND (:lifer is null or IS_LIFER = :lifer)
+)
+WHERE ROW_NUM = 1
+ORDER BY IS_ALIAS, PRIMARY_SURNAME, PRIMARY_INITIAL, BIRTH_DATE, RECEPTION_DATE DESC""",
+    nativeQuery = true,
+  )
+  fun findByDetails(
+    forename: String?,
+    forenameWithWildcard: String?,
+    surname: String?,
+    surnameWithWildcard: String?,
+    birthDateFrom: LocalDate?,
+    birthDateTo: LocalDate?,
+    ageFrom: Int?,
+    ageTo: Int?,
+    gender: String?,
+    hdc: Boolean?,
+    lifer: Boolean?,
+    pageRequest: Pageable,
+  ): Page<PrisonerSearchDto>
+}

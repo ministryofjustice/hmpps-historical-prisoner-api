@@ -86,6 +86,10 @@ data class Prisoner(
   @Column(name = "PRIMARY_FORENAME_1", length = 13)
   val primaryForename1: String? = null,
 
+  @Column(name = "PRIMARY_INITIAL")
+  @JsonIgnore
+  val primaryInitial: Char? = null,
+
   @Size(max = 13)
   @Column(name = "PRIMARY_FORENAME_2", length = 13)
   val primaryForename2: String? = null,

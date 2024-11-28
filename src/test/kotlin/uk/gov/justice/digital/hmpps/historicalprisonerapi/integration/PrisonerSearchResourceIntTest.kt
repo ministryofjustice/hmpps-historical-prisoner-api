@@ -74,42 +74,42 @@ class PrisonerSearchResourceIntTest : IntegrationTestBase() {
     @Test
     fun `should search by surname`() {
       testHappyPath("surname=wilson") {
-        assertThat(it).hasSize(2).extracting("prisonNumber").containsOnly("BF123455")
+        assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("BF123455")
       }
     }
 
     @Test
     fun `should search by surname in uppercase and trimmed`() {
       testHappyPath("surname= wilson  ") {
-        assertThat(it).hasSize(2).extracting("prisonNumber").containsOnly("BF123455")
+        assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("BF123455")
       }
     }
 
     @Test
     fun `should search by surname with wildcard`() {
       testHappyPath("surname=wils%") {
-        assertThat(it).hasSize(2).extracting("prisonNumber").containsOnly("BF123455")
+        assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("BF123455")
       }
     }
 
     @Test
     fun `should search by date of birth`() {
       testHappyPath("dateOfBirth=1967-01-01") {
-        assertThat(it).hasSize(4).extracting("prisonNumber").containsOnly("BF123451", "BF123459")
+        assertThat(it).hasSize(2).extracting("prisonNumber").containsOnly("BF123451", "BF123459")
       }
     }
 
     @Test
     fun `should ignore forename and surname in search if blank`() {
       testHappyPath("dateOfBirth=1967-01-01&forename= &surname= ") {
-        assertThat(it).hasSize(4).extracting("prisonNumber").containsOnly("BF123451", "BF123459")
+        assertThat(it).hasSize(2).extracting("prisonNumber").containsOnly("BF123451", "BF123459")
       }
     }
 
     @Test
     fun `should ignore forename and surname in search if empty`() {
       testHappyPath("dateOfBirth=1967-01-01&forename=&surname=") {
-        assertThat(it).hasSize(4).extracting("prisonNumber").containsOnly("BF123451", "BF123459")
+        assertThat(it).hasSize(2).extracting("prisonNumber").containsOnly("BF123451", "BF123459")
       }
     }
 
@@ -186,7 +186,7 @@ class PrisonerSearchResourceIntTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `should only return specific fields`() {
+    fun `should return all fields`() {
       webTestClient.get()
         .uri("/search?forename=f&hdc=true")
         .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
@@ -196,33 +196,14 @@ class PrisonerSearchResourceIntTest : IntegrationTestBase() {
         .expectBody()
         .jsonPath("$.content.[0].prisonNumber").isEqualTo("AB111111")
         .jsonPath("$.content.[0].receptionDate").isEqualTo("1999-01-01")
-        .jsonPath("$.content.[0].primarySurname").isEqualTo("SURNAMEA")
-        .jsonPath("$.content.[0].primaryForename1").isEqualTo("FIRSTA")
-        .jsonPath("$.content.[0].primaryForename2").isEqualTo("MIDDLEA")
-        .jsonPath("$.content.[0].primaryBirthDate").isEqualTo("1980-01-01")
+        .jsonPath("$.content.[0].lastName").isEqualTo("SURNAMEA")
+        .jsonPath("$.content.[0].firstName").isEqualTo("FIRSTA")
+        .jsonPath("$.content.[0].middleName").isEqualTo("MIDDLEA")
+        .jsonPath("$.content.[0].dob").isEqualTo("1980-01-01")
         .jsonPath("$.content.[0].isAlias").isEqualTo("false")
-        .jsonPath("$.content.[0].surname").isEqualTo("SURNAMEA")
-        .jsonPath("$.content.[0].forename1").isEqualTo("FIRSTA")
-        .jsonPath("$.content.[0].forename2").isEqualTo("MIDDLEA")
-    }
-
-    @Test
-    fun `should not return ignored fields`() {
-      webTestClient.get()
-        .uri("/search?forename=f&hdc=true")
-        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody()
-        .jsonPath("$.content.[0].id").doesNotExist()
-        .jsonPath("$.content.[0].personIdentifier").doesNotExist()
-        .jsonPath("$.content.[0].birthDate").doesNotExist()
-        .jsonPath("$.content.[0].sex").doesNotExist()
-        .jsonPath("$.content.[0].pncNumber").doesNotExist()
-        .jsonPath("$.content.[0].croNumber").doesNotExist()
-        .jsonPath("$.content.[0].hasHdc").doesNotExist()
-        .jsonPath("$.content.[0].isLifer").doesNotExist()
+        .jsonPath("$.content.[0].aliasLast").isEqualTo("SURNAMEA")
+        .jsonPath("$.content.[0].aliasFirst").isEqualTo("FIRSTA")
+        .jsonPath("$.content.[0].aliasMiddle").isEqualTo("MIDDLEA")
     }
   }
 
