@@ -12,7 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.Prisoner
+import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.PrisonerSearchDto
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.service.PrisonerSearchService
 import uk.gov.justice.hmpps.kotlin.common.ErrorResponse
 
@@ -40,7 +40,7 @@ class IdentifierSearchResource(private val prisonerSearchService: PrisonerSearch
       ),
     ],
   )
-  fun findPrisonersWithIdentifiers(prisonNumber: String?, pnc: String?, cro: String?, pageRequest: Pageable): Page<Prisoner> {
+  fun findPrisonersWithIdentifiers(prisonNumber: String?, pnc: String?, cro: String?, pageRequest: Pageable): Page<PrisonerSearchDto> {
     if (prisonNumber.isNullOrBlank() && pnc.isNullOrBlank() && cro.isNullOrBlank()) {
       throw ValidationException("At least one identifier must be provided")
     }

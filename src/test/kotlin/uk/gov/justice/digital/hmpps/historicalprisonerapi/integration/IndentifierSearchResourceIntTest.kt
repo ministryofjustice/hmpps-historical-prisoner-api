@@ -45,14 +45,14 @@ class IndentifierSearchResourceIntTest : IntegrationTestBase() {
     @Test
     fun `should search by prison number`() {
       testHappyPath("prisonNumber=AB111111") {
-        assertThat(it).hasSize(3).extracting("prisonNumber").containsOnly("AB111111")
+        assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("AB111111")
       }
     }
 
     @Test
     fun `should search by pnc number`() {
       testHappyPath("pnc=012345/99D") {
-        assertThat(it).hasSize(4).extracting("prisonNumber").containsOnly("AB111112")
+        assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("AB111112")
       }
     }
 
@@ -66,14 +66,14 @@ class IndentifierSearchResourceIntTest : IntegrationTestBase() {
     @Test
     fun `should search by all identifiers`() {
       testHappyPath("pnc=BK2345/BK1&cro=BK1111/CR0&prisonNumber=BF123459") {
-        assertThat(it).hasSize(5).extracting("prisonNumber").containsOnly("BF123459")
+        assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("BF123459")
       }
     }
 
     @Test
     fun `should trim and uppercase identifiers`() {
       testHappyPath("pnc= bk2345/BK1 &cro= bk1111/CR0 &prisonNumber= bf123459 ") {
-        assertThat(it).hasSize(5).extracting("prisonNumber").containsOnly("BF123459")
+        assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("BF123459")
       }
     }
 
@@ -100,7 +100,7 @@ class IndentifierSearchResourceIntTest : IntegrationTestBase() {
     @Test
     fun `should ignore blank other identifiers`() {
       testHappyPath("prisonNumber=AB111111&pnc= &cro= ") {
-        assertThat(it).hasSize(3).extracting("prisonNumber").containsOnly("AB111111")
+        assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("AB111111")
       }
     }
 
@@ -114,7 +114,7 @@ class IndentifierSearchResourceIntTest : IntegrationTestBase() {
     @Test
     fun `should ignore empty other identifiers`() {
       testHappyPath("prisonNumber=AB111111&pnc=&cro=") {
-        assertThat(it).hasSize(3).extracting("prisonNumber").containsOnly("AB111111")
+        assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("AB111111")
       }
     }
 

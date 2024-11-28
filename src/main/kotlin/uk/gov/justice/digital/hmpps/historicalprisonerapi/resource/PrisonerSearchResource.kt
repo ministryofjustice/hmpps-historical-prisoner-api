@@ -13,7 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.Prisoner
+import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.PrisonerSearchDto
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.service.PrisonerSearchService
 import uk.gov.justice.hmpps.kotlin.common.ErrorResponse
 import java.time.LocalDate
@@ -52,7 +52,7 @@ class PrisonerSearchResource(private val prisonerSearchService: PrisonerSearchSe
     @Parameter(description = "Whether the prisoner has a HDC. Must be used in combination with forename, surname, dateOfBirth or ageFrom.") hdc: Boolean?,
     @Parameter(description = "Whether the prisoner is a lifer. Must be used in combination with forename, surname, dateOfBirth or ageFrom.") lifer: Boolean?,
     pageRequest: Pageable,
-  ): Page<Prisoner> {
+  ): Page<PrisonerSearchDto> {
     if (forename.isNullOrBlank() && surname.isNullOrBlank() && dateOfBirth == null && ageFrom == null) {
       throw ValidationException("At least one search term must be provided")
     }
