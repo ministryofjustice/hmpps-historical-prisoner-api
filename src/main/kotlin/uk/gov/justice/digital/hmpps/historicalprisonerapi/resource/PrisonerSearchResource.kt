@@ -48,7 +48,7 @@ class PrisonerSearchResource(private val prisonerSearchService: PrisonerSearchSe
     @Parameter(description = "Date of birth to search for") dateOfBirth: LocalDate?,
     @Parameter(description = "Age from which to search for.  If no ageTo is provided then ageFrom is used as ageTo as well.") ageFrom: Int?,
     @Parameter(description = "Age to which to search for.  Must be used in combination with ageFrom.") ageTo: Int?,
-    @Parameter(description = "Gender to search for. Must be used in combination with forename, surname, dateOfBirth or ageFrom.") gender: Char?,
+    @Parameter(description = "Gender to search for, either M or F. Must be used in combination with forename, surname, dateOfBirth or ageFrom.") gender: String?,
     @Parameter(description = "Whether the prisoner has a HDC. Must be used in combination with forename, surname, dateOfBirth or ageFrom.") hdc: Boolean?,
     @Parameter(description = "Whether the prisoner is a lifer. Must be used in combination with forename, surname, dateOfBirth or ageFrom.") lifer: Boolean?,
     pageRequest: Pageable,

@@ -98,6 +98,20 @@ class IndentifierSearchResourceIntTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `should trim and uppercase identifiers`() {
+      webTestClient.get()
+        .uri("/identifiers?pnc= bk2345/BK1 &cro= bk1111/CR0 &prisonNumber= bf123459 ")
+        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
+        .exchange()
+        .expectStatus()
+        .isOk
+        .expectBody()
+        .jsonPath("$.content").value<List<Prisoner>> {
+          assertThat(it).hasSize(5).extracting("prisonNumber").containsOnly("BF123459")
+        }
+    }
+
+    @Test
     fun `should return bad request when no identifiers provided`() {
       webTestClient.get()
         .uri("/identifiers")
@@ -115,6 +129,34 @@ class IndentifierSearchResourceIntTest : IntegrationTestBase() {
         .exchange()
         .expectStatus()
         .isBadRequest
+    }
+
+    @Test
+    fun `should ignore blank other identifiers`() {
+      webTestClient.get()
+        .uri("/identifiers?prisonNumber=AB111111&pnc= &cro= ")
+        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
+        .exchange()
+        .expectStatus()
+        .isOk
+        .expectBody()
+        .jsonPath("$.content").value<List<Prisoner>> {
+          assertThat(it).hasSize(3).extracting("prisonNumber").containsOnly("AB111111")
+        }
+    }
+
+    @Test
+    fun `should ignore blank prison number`() {
+      webTestClient.get()
+        .uri("/identifiers?prisonNumber= &pnc= &cro=BK3333/CR0")
+        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
+        .exchange()
+        .expectStatus()
+        .isOk
+        .expectBody()
+        .jsonPath("$.content").value<List<Prisoner>> {
+          assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("BF123454")
+        }
     }
   }
 }
