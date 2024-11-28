@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.Prisoner
 import java.time.LocalDate
 
@@ -44,215 +45,124 @@ class PrisonerSearchResourceIntTest : IntegrationTestBase() {
 
     @Test
     fun `should search by forename`() {
-      webTestClient.get()
-        .uri("/search?forename=George")
-        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody()
-        .jsonPath("$.content").value<List<Prisoner>> {
-          assertThat(it).hasSize(3).extracting("prisonNumber").containsOnly("BF123451", "BF123454", "BF123459")
-        }
+      testHappyPath("forename=George") {
+        assertThat(it).hasSize(3).extracting("prisonNumber").containsOnly("BF123451", "BF123454", "BF123459")
+      }
     }
 
     @Test
     fun `should search by forename in uppercase and trimmed`() {
-      webTestClient.get()
-        .uri("/search?forename= george  ")
-        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody()
-        .jsonPath("$.content").value<List<Prisoner>> {
-          assertThat(it).hasSize(3).extracting("prisonNumber").containsOnly("BF123451", "BF123454", "BF123459")
-        }
+      testHappyPath("forename= george  ") {
+        assertThat(it).hasSize(3).extracting("prisonNumber").containsOnly("BF123451", "BF123454", "BF123459")
+      }
     }
 
     @Test
     fun `should search by forename with wildcard`() {
-      webTestClient.get()
-        .uri("/search?forename=Geor%")
-        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody()
-        .jsonPath("$.content").value<List<Prisoner>> {
-          assertThat(it).hasSize(3).extracting("prisonNumber").containsOnly("BF123451", "BF123454", "BF123459")
-        }
+      testHappyPath("forename=Geor%") {
+        assertThat(it).hasSize(3).extracting("prisonNumber").containsOnly("BF123451", "BF123454", "BF123459")
+      }
     }
 
     @Test
     fun `should search by forename with initial`() {
-      webTestClient.get()
-        .uri("/search?forename=G")
-        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody()
-        .jsonPath("$.content").value<List<Prisoner>> {
-          assertThat(it).hasSize(4).extracting("prisonNumber").containsOnly("BF123451", "BF123454", "BF123455", "BF123459")
-        }
+      testHappyPath("forename=G") {
+        assertThat(it).hasSize(4).extracting("prisonNumber").containsOnly("BF123451", "BF123454", "BF123455", "BF123459")
+      }
     }
 
     @Test
     fun `should search by surname`() {
-      webTestClient.get()
-        .uri("/search?surname=wilson")
-        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody()
-        .jsonPath("$.content").value<List<Prisoner>> {
-          assertThat(it).hasSize(2).extracting("prisonNumber").containsOnly("BF123455")
-        }
+      testHappyPath("surname=wilson") {
+        assertThat(it).hasSize(2).extracting("prisonNumber").containsOnly("BF123455")
+      }
     }
 
     @Test
     fun `should search by surname in uppercase and trimmed`() {
-      webTestClient.get()
-        .uri("/search?surname= wilson  ")
-        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody()
-        .jsonPath("$.content").value<List<Prisoner>> {
-          assertThat(it).hasSize(2).extracting("prisonNumber").containsOnly("BF123455")
-        }
+      testHappyPath("surname= wilson  ") {
+        assertThat(it).hasSize(2).extracting("prisonNumber").containsOnly("BF123455")
+      }
     }
 
     @Test
     fun `should search by surname with wildcard`() {
-      webTestClient.get()
-        .uri("/search?surname=wils%")
-        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody()
-        .jsonPath("$.content").value<List<Prisoner>> {
-          assertThat(it).hasSize(2).extracting("prisonNumber").containsOnly("BF123455")
-        }
+      testHappyPath("surname=wils%") {
+        assertThat(it).hasSize(2).extracting("prisonNumber").containsOnly("BF123455")
+      }
     }
 
     @Test
     fun `should search by date of birth`() {
-      webTestClient.get()
-        .uri("/search?dateOfBirth=1967-01-01")
-        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody()
-        .jsonPath("$.content").value<List<Prisoner>> {
-          assertThat(it).hasSize(4).extracting("prisonNumber").containsOnly("BF123451", "BF123459")
-        }
+      testHappyPath("dateOfBirth=1967-01-01") {
+        assertThat(it).hasSize(4).extracting("prisonNumber").containsOnly("BF123451", "BF123459")
+      }
     }
 
     @Test
     fun `should ignore forename and surname in search if blank`() {
-      webTestClient.get()
-        .uri("/search?dateOfBirth=1967-01-01&forename= &surname= ")
-        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody()
-        .jsonPath("$.content").value<List<Prisoner>> {
-          assertThat(it).hasSize(4).extracting("prisonNumber").containsOnly("BF123451", "BF123459")
-        }
+      testHappyPath("dateOfBirth=1967-01-01&forename= &surname= ") {
+        assertThat(it).hasSize(4).extracting("prisonNumber").containsOnly("BF123451", "BF123459")
+      }
+    }
+
+    @Test
+    fun `should ignore forename and surname in search if empty`() {
+      testHappyPath("dateOfBirth=1967-01-01&forename=&surname=") {
+        assertThat(it).hasSize(4).extracting("prisonNumber").containsOnly("BF123451", "BF123459")
+      }
     }
 
     @Test
     fun `should search by age with one term`() {
       val age = LocalDate.now().year - LocalDate.parse("1987-01-01").year
-      webTestClient.get()
-        .uri("/search?ageFrom=$age")
-        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody()
-        .jsonPath("$.content").value<List<Prisoner>> {
-          assertThat(it).hasSize(8).extracting("prisonNumber").containsOnly("DD000001", "DD000003", "DD000004", "DD000005", "DD000007", "DD000008", "DD000010", "DD000012")
-        }
+      testHappyPath("ageFrom=$age") {
+        assertThat(it).hasSize(8).extracting("prisonNumber").containsOnly("DD000001", "DD000003", "DD000004", "DD000005", "DD000007", "DD000008", "DD000010", "DD000012")
+      }
     }
 
     @Test
     fun `should search by age with range`() {
       val age = LocalDate.now().year - LocalDate.parse("1955-01-01").year
-      webTestClient.get()
-        .uri("/search?ageFrom=$age&ageTo=${age + 2}")
-        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody()
-        .jsonPath("$.content").value<List<Prisoner>> {
-          assertThat(it).hasSize(2).extracting("prisonNumber").containsOnly("BF123451", "BF123459")
-        }
+      testHappyPath("ageFrom=$age&ageTo=${age + 2}") {
+        assertThat(it).hasSize(2).extracting("prisonNumber").containsOnly("BF123451", "BF123459")
+      }
     }
 
     @Test
     fun `should search by gender`() {
-      webTestClient.get()
-        .uri("/search?forename=f&gender=f")
-        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody()
-        .jsonPath("$.content").value<List<Prisoner>> {
-          assertThat(it).hasSize(4).extracting("prisonNumber").containsOnly("AB111112", "AB111114", "AB111116", "AB111118")
-        }
+      testHappyPath("forename=f&gender=f") {
+        assertThat(it).hasSize(4).extracting("prisonNumber").containsOnly("AB111112", "AB111114", "AB111116", "AB111118")
+      }
+    }
+
+    @Test
+    fun `should ignore gender if blank`() {
+      testHappyPath("forename=firsta&gender= ") {
+        assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("AB111111")
+      }
     }
 
     @Test
     fun `should search by hdc`() {
-      webTestClient.get()
-        .uri("/search?forename=f&hdc=true")
-        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody()
-        .jsonPath("$.content").value<List<Prisoner>> {
-          assertThat(it).hasSize(2).extracting("prisonNumber").containsOnly("AB111111", "AB111112")
-        }
+      testHappyPath("forename=f&hdc=true") {
+        assertThat(it).hasSize(2).extracting("prisonNumber").containsOnly("AB111111", "AB111112")
+      }
     }
 
     @Test
     fun `should search by lifer`() {
-      webTestClient.get()
-        .uri("/search?forename=f&lifer=true")
-        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody()
-        .jsonPath("$.content").value<List<Prisoner>> {
-          assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("AB111111")
-        }
+      testHappyPath("forename=f&lifer=true") {
+        assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("AB111111")
+      }
     }
 
     @Test
     fun `should search by all terms`() {
       val age = LocalDate.now().year - LocalDate.parse("1980-01-01").year
-      webTestClient.get()
-        .uri("/search?surname=Surn%&forename=F&dateOfBirth=1980-01-01&ageFrom=$age&ageTo=$age&gender=M&hdc=true&lifer=true")
-        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody()
-        .jsonPath("$.content").value<List<Prisoner>> {
-          assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("AB111111")
-        }
+      testHappyPath("surname=Surn%&forename=F&dateOfBirth=1980-01-01&ageFrom=$age&ageTo=$age&gender=M&hdc=true&lifer=true") {
+        assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("AB111111")
+      }
     }
 
     @Test
@@ -315,4 +225,14 @@ class PrisonerSearchResourceIntTest : IntegrationTestBase() {
         .jsonPath("$.content.[0].isLifer").doesNotExist()
     }
   }
+
+  private fun testHappyPath(parameters: String, function: (t: List<Prisoner>) -> Unit): WebTestClient.BodyContentSpec =
+    webTestClient.get()
+      .uri("/search?$parameters")
+      .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
+      .exchange()
+      .expectStatus()
+      .isOk
+      .expectBody()
+      .jsonPath("$.content").value(function)
 }
