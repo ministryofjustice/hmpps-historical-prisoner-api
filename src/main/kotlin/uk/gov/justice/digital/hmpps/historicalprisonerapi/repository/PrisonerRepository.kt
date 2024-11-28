@@ -12,53 +12,23 @@ import java.time.LocalDate
 
 @Repository
 interface PrisonerRepository : JpaRepository<Prisoner, Int>, JpaSpecificationExecutor<Prisoner> {
+
   @Query(
     """
-    SELECT  PRISON_NUMBER      AS prisonNumber,
-            RECEPTION_DATE     AS receptionDate,
-            PRIMARY_SURNAME    AS lastName,
-            PRIMARY_FORENAME_1 AS firstName,
-            PRIMARY_FORENAME_2 AS middleName,
-            PRIMARY_BIRTH_DATE AS dob,
-            IS_ALIAS           AS isAlias,
-            SURNAME            AS aliasLast,
-            FORENAME_1         AS aliasFirst,
-            FORENAME_2         AS aliasMiddle
-      FROM (
-      SELECT
-        row_number()
-        OVER ( PARTITION BY PRISON_NUMBER
-        ORDER BY (IS_ALIAS) ) ROW_NUM,
-    *
-    FROM HPA.PRISONERS
+    $SELECT_CLAUSE
+      FROM HPA.PRISONERS
       WHERE (:prisonNumber is null or PRISON_NUMBER = :prisonNumber)
         AND (:pnc is null or PNC_NUMBER = :pnc)
         AND (:cro is null or CRO_NUMBER = :cro)
   )
-  WHERE ROW_NUM = 1
-  ORDER BY IS_ALIAS, PRIMARY_SURNAME, PRIMARY_INITIAL, BIRTH_DATE, RECEPTION_DATE DESC""",
+  $WHERE_ORDER_CLAUSE""",
     nativeQuery = true,
   )
   fun findByIdentifiers(prisonNumber: String?, pnc: String?, cro: String?, pageRequest: Pageable): Page<PrisonerSearchDto>
 
   @Query(
     """
-    SELECT  PRISON_NUMBER      AS prisonNumber,
-            RECEPTION_DATE     AS receptionDate,
-            PRIMARY_SURNAME    AS lastName,
-            PRIMARY_FORENAME_1 AS firstName,
-            PRIMARY_FORENAME_2 AS middleName,
-            PRIMARY_BIRTH_DATE AS dob,
-            IS_ALIAS           AS isAlias,
-            SURNAME            AS aliasLast,
-            FORENAME_1         AS aliasFirst,
-            FORENAME_2         AS aliasMiddle
-    FROM (
-    SELECT
-      row_number()
-      OVER ( PARTITION BY PRISON_NUMBER
-      ORDER BY (IS_ALIAS) ) ROW_NUM,
-  *
+    $SELECT_CLAUSE
   FROM HPA.PRISONERS
     WHERE (:forename is null or FORENAME_1 = :forename)
       AND (:forenameWithWildcard is null or FORENAME_1 like :forenameWithWildcard)
@@ -69,9 +39,8 @@ interface PrisonerRepository : JpaRepository<Prisoner, Int>, JpaSpecificationExe
       AND (:gender is null or SEX = :gender)
       AND (:hdc is null or HAS_HDC = :hdc)
       AND (:lifer is null or IS_LIFER = :lifer)
-)
-WHERE ROW_NUM = 1
-ORDER BY IS_ALIAS, PRIMARY_SURNAME, PRIMARY_INITIAL, BIRTH_DATE, RECEPTION_DATE DESC""",
+  )
+  $WHERE_ORDER_CLAUSE""",
     nativeQuery = true,
   )
   fun findByDetails(
@@ -88,4 +57,41 @@ ORDER BY IS_ALIAS, PRIMARY_SURNAME, PRIMARY_INITIAL, BIRTH_DATE, RECEPTION_DATE 
     lifer: Boolean?,
     pageRequest: Pageable,
   ): Page<PrisonerSearchDto>
+
+  @Query(
+    """
+    $SELECT_CLAUSE
+      FROM HPA.PRISONERS
+      WHERE PRISON_NUMBER IN (
+        SELECT DISTINCT PRISON_NUMBER FROM HPA.ADDRESS_LOOKUP WHERE CONTAINS(ADDRESS_TEXT, :addressTerms)
+      )
+  )
+  $WHERE_ORDER_CLAUSE""",
+    nativeQuery = true,
+  )
+  fun findByAddresses(addressTerms: String, pageRequest: Pageable): Page<PrisonerSearchDto>
+
+  companion object {
+    const val SELECT_CLAUSE = """
+      SELECT  PRISON_NUMBER      AS prisonNumber,
+              RECEPTION_DATE     AS receptionDate,
+              PRIMARY_SURNAME    AS lastName,
+              PRIMARY_FORENAME_1 AS firstName,
+              PRIMARY_FORENAME_2 AS middleName,
+              PRIMARY_BIRTH_DATE AS dob,
+              IS_ALIAS           AS isAlias,
+              SURNAME            AS aliasLast,
+              FORENAME_1         AS aliasFirst,
+              FORENAME_2         AS aliasMiddle
+        FROM (
+        SELECT
+          row_number()
+          OVER ( PARTITION BY PRISON_NUMBER
+          ORDER BY (IS_ALIAS) ) ROW_NUM,
+      *"""
+    const val WHERE_ORDER_CLAUSE = """
+      WHERE ROW_NUM = 1
+      ORDER BY IS_ALIAS, PRIMARY_SURNAME, PRIMARY_INITIAL, BIRTH_DATE, RECEPTION_DATE DESC
+    """
+  }
 }

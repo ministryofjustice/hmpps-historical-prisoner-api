@@ -1,11 +1,14 @@
 package uk.gov.justice.digital.hmpps.historicalprisonerapi.service
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.hmpps.historicalprisonerapi.repository.AddressLookupRepository
+import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.PrisonerSearchDto
+import uk.gov.justice.digital.hmpps.historicalprisonerapi.repository.PrisonerRepository
 
 @Service
-class AddressLookupService(private val addressLookupRepository: AddressLookupRepository) {
-  fun findPrisonersWithAddresses(addressTerms: String): List<String> {
+class AddressLookupService(private val prisonerRepository: PrisonerRepository) {
+  fun findPrisonersWithAddresses(addressTerms: String, pageRequest: Pageable): Page<PrisonerSearchDto> {
     // duplicate logic from HPA front end
     val searchTerm = addressTerms
       .replace(".", " ")
@@ -14,6 +17,6 @@ class AddressLookupService(private val addressLookupRepository: AddressLookupRep
       .trim()
       .split("\\s+".toRegex())
       .joinToString(", ") { it.trim() }
-    return addressLookupRepository.findPrisonersWithAddresses("NEAR(($searchTerm), 5, TRUE)")
+    return prisonerRepository.findByAddresses("NEAR(($searchTerm), 5, TRUE)", pageRequest)
   }
 }

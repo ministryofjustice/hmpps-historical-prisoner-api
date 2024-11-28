@@ -5,10 +5,13 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.PrisonerSearchDto
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.service.AddressLookupService
 import uk.gov.justice.hmpps.kotlin.common.ErrorResponse
 
@@ -36,5 +39,5 @@ class AddressLookupResource(private val addressLookupService: AddressLookupServi
       ),
     ],
   )
-  fun findPrisonersWithAddresses(addressTerms: String): List<String> = addressLookupService.findPrisonersWithAddresses(addressTerms)
+  fun findPrisonersWithAddresses(addressTerms: String, pageRequest: Pageable): Page<PrisonerSearchDto> = addressLookupService.findPrisonersWithAddresses(addressTerms, pageRequest)
 }
