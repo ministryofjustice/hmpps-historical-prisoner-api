@@ -43,8 +43,8 @@ class PrisonerSearchResource(private val prisonerSearchService: PrisonerSearchSe
     ],
   )
   fun findPrisoners(
-    @Parameter(description = "Forename to search for. Wildcards (%) can be used. A single initial will automatically be wildcarded.") forename: String?,
-    @Parameter(description = "Surname to search for. Wildcards (%) can be used.") surname: String?,
+    @Parameter(description = "Forename to search for. Wildcards (% or *) can be used. A single initial will automatically be wildcarded.") forename: String?,
+    @Parameter(description = "Surname to search for. Wildcards (% or *) can be used.") surname: String?,
     @Parameter(description = "Date of birth to search for") dateOfBirth: LocalDate?,
     @Parameter(description = "Age from which to search for.  If no ageTo is provided then ageFrom is used as ageTo as well.") ageFrom: Int?,
     @Parameter(description = "Age to which to search for.  Must be used in combination with ageFrom.") ageTo: Int?,
