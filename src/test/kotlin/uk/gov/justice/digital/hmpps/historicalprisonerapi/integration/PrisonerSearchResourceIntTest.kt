@@ -58,8 +58,15 @@ class PrisonerSearchResourceIntTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `should search by forename with wildcard`() {
+    fun `should search by forename with percent wildcard`() {
       testHappyPath("forename=Geor%") {
+        assertThat(it).hasSize(3).extracting("prisonNumber").containsOnly("BF123451", "BF123454", "BF123459")
+      }
+    }
+
+    @Test
+    fun `should search by forename with asterix wildcard`() {
+      testHappyPath("forename=Geor*") {
         assertThat(it).hasSize(3).extracting("prisonNumber").containsOnly("BF123451", "BF123454", "BF123459")
       }
     }
@@ -86,8 +93,15 @@ class PrisonerSearchResourceIntTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `should search by surname with wildcard`() {
+    fun `should search by surname with percent wildcard`() {
       testHappyPath("surname=wils%") {
+        assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("BF123455")
+      }
+    }
+
+    @Test
+    fun `should search by surname with asterix wildcard`() {
+      testHappyPath("surname=wils*") {
         assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("BF123455")
       }
     }

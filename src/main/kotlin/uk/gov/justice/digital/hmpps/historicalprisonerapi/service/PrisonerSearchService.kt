@@ -31,7 +31,9 @@ class PrisonerSearchService(
     pageRequest: Pageable,
   ): Page<PrisonerSearchDto> {
     val (forenameSanitised, forenameWithWildcard) = forename?.uppercaseTrimToNull()?.let { fore ->
-      if (fore.contains("%")) {
+      if (fore.contains("*")) {
+        Pair(null, fore.replace("*", "%"))
+      } else if (fore.contains("%")) {
         Pair(null, fore)
       } else if (fore.length == 1) {
         Pair(null, "$fore%")
@@ -40,7 +42,9 @@ class PrisonerSearchService(
       }
     } ?: Pair(null, null)
     val (surnameSanitised, surnameWithWildcard) = surname?.uppercaseTrimToNull()?.let { sur ->
-      if (sur.contains("%")) {
+      if (sur.contains("*")) {
+        Pair(null, sur.replace("*", "%"))
+      } else if (sur.contains("%")) {
         Pair(null, sur)
       } else {
         Pair(sur, null)
