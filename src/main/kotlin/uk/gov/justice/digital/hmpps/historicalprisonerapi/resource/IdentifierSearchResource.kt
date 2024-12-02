@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.historicalprisonerapi.resource
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -40,10 +41,26 @@ class IdentifierSearchResource(private val prisonerSearchService: PrisonerSearch
       ),
     ],
   )
-  fun findPrisonersWithIdentifiers(prisonNumber: String?, pnc: String?, cro: String?, pageRequest: Pageable): Page<PrisonerSearchDto> {
+  fun findPrisonersWithIdentifiers(
+    prisonNumber: String?,
+    pnc: String?,
+    cro: String?,
+    @Parameter(description = "Gender to search for, either M or F. Must be used in combination with prisonNumber, pnc or cro.") gender: String?,
+    @Parameter(description = "Whether the prisoner has a HDC. Must be used in combination with prisonNumber, pnc or cro.") hdc: Boolean?,
+    @Parameter(description = "Whether the prisoner is a lifer. Must be used in combination with prisonNumber, pnc or cro.") lifer: Boolean?,
+    pageRequest: Pageable,
+  ): Page<PrisonerSearchDto> {
     if (prisonNumber.isNullOrBlank() && pnc.isNullOrBlank() && cro.isNullOrBlank()) {
       throw ValidationException("At least one identifier must be provided")
     }
-    return prisonerSearchService.findPrisoners(prisonNumber = prisonNumber, pnc = pnc, cro = cro, pageRequest = pageRequest)
+    return prisonerSearchService.findPrisoners(
+      prisonNumber = prisonNumber,
+      pnc = pnc,
+      cro = cro,
+      gender = gender,
+      hdc = hdc,
+      lifer = lifer,
+      pageRequest = pageRequest,
+    )
   }
 }

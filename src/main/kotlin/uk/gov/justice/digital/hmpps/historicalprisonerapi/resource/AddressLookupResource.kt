@@ -1,10 +1,12 @@
 package uk.gov.justice.digital.hmpps.historicalprisonerapi.resource
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import jakarta.validation.ValidationException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.security.access.prepost.PreAuthorize
@@ -22,7 +24,7 @@ class AddressLookupResource(private val addressLookupService: AddressLookupServi
 
   @GetMapping
   @Operation(
-    summary = "Retrieve prisoner numbers from address terms",
+    summary = "Retrieve prisoners from address terms",
     description = "Requires role ROLE_HPA_USER",
     security = [SecurityRequirement(name = "historical-prisoner-ui-role")],
     responses = [
@@ -39,5 +41,23 @@ class AddressLookupResource(private val addressLookupService: AddressLookupServi
       ),
     ],
   )
-  fun findPrisonersWithAddresses(addressTerms: String, pageRequest: Pageable): Page<PrisonerSearchDto> = addressLookupService.findPrisonersWithAddresses(addressTerms, pageRequest)
+  fun findPrisonersWithAddresses(
+    @Parameter(description = "Address terms to search for", required = true) addressTerms: String,
+    @Parameter(description = "Gender to search for, either M or F. Must be used in combination with addressTerms.") gender: String?,
+    @Parameter(description = "Whether the prisoner has a HDC. Must be used in combination with addressTerms.") hdc: Boolean?,
+    @Parameter(description = "Whether the prisoner is a lifer. Must be used in combination with addressTerms.") lifer: Boolean?,
+    pageRequest: Pageable,
+  ): Page<PrisonerSearchDto> {
+    if (addressTerms.isBlank()) {
+      throw ValidationException("Address terms must be provided")
+    }
+
+    return addressLookupService.findPrisonersWithAddresses(
+      addressTerms,
+      gender = gender,
+      hdc = hdc,
+      lifer = lifer,
+      pageRequest,
+    )
+  }
 }

@@ -8,7 +8,13 @@ import uk.gov.justice.digital.hmpps.historicalprisonerapi.repository.PrisonerRep
 
 @Service
 class AddressLookupService(private val prisonerRepository: PrisonerRepository) {
-  fun findPrisonersWithAddresses(addressTerms: String, pageRequest: Pageable): Page<PrisonerSearchDto> {
+  fun findPrisonersWithAddresses(
+    addressTerms: String,
+    gender: String?,
+    hdc: Boolean?,
+    lifer: Boolean?,
+    pageRequest: Pageable,
+  ): Page<PrisonerSearchDto> {
     // duplicate logic from HPA front end
     val searchTerm = addressTerms
       .replace(".", " ")
@@ -17,6 +23,14 @@ class AddressLookupService(private val prisonerRepository: PrisonerRepository) {
       .trim()
       .split("\\s+".toRegex())
       .joinToString(", ") { it.trim() }
-    return prisonerRepository.findByAddresses("NEAR(($searchTerm), 5, TRUE)", pageRequest)
+    return prisonerRepository.findByAddresses(
+      "NEAR(($searchTerm), 5, TRUE)",
+      gender = gender?.uppercaseTrimToNull(),
+      hdc = hdc,
+      lifer = lifer,
+      pageRequest,
+    )
   }
+
+  private fun String.uppercaseTrimToNull() = this.uppercase().trim().ifBlank { null }
 }

@@ -20,6 +20,9 @@ interface PrisonerRepository : JpaRepository<Prisoner, Int>, JpaSpecificationExe
      WHERE (:prisonNumber is null or PRISON_NUMBER = :prisonNumber)
        AND (:pnc is null or PNC_NUMBER = :pnc)
        AND (:cro is null or CRO_NUMBER = :cro)
+       AND (:gender is null or SEX = :gender)
+       AND (:hdc is null or HAS_HDC = :hdc)
+       AND (:lifer is null or IS_LIFER = :lifer)
     ) NUMBERED_ROWS
     $WHERE_ORDER_CLAUSE
     """,
@@ -29,12 +32,23 @@ interface PrisonerRepository : JpaRepository<Prisoner, Int>, JpaSpecificationExe
      WHERE (:prisonNumber is null or PRISON_NUMBER = :prisonNumber)
        AND (:pnc is null or PNC_NUMBER = :pnc)
        AND (:cro is null or CRO_NUMBER = :cro)
+       AND (:gender is null or SEX = :gender)
+       AND (:hdc is null or HAS_HDC = :hdc)
+       AND (:lifer is null or IS_LIFER = :lifer)
     ) NUMBERED_ROWS
     WHERE ROW_NUM = 1
     """,
     nativeQuery = true,
   )
-  fun findByIdentifiers(prisonNumber: String?, pnc: String?, cro: String?, pageRequest: Pageable): Page<PrisonerSearchDto>
+  fun findByIdentifiers(
+    prisonNumber: String?,
+    pnc: String?,
+    cro: String?,
+    gender: String?,
+    hdc: Boolean?,
+    lifer: Boolean?,
+    pageRequest: Pageable,
+  ): Page<PrisonerSearchDto>
 
   @Query(
     """
@@ -90,6 +104,9 @@ interface PrisonerRepository : JpaRepository<Prisoner, Int>, JpaSpecificationExe
      WHERE PRISON_NUMBER IN (
        SELECT DISTINCT PRISON_NUMBER FROM HPA.ADDRESS_LOOKUP WHERE CONTAINS(ADDRESS_TEXT, :addressTerms)
      )
+       AND (:gender is null or SEX = :gender)
+       AND (:hdc is null or HAS_HDC = :hdc)
+       AND (:lifer is null or IS_LIFER = :lifer)
     ) NUMBERED_ROWS
   $WHERE_ORDER_CLAUSE""",
     countQuery = """
@@ -98,12 +115,21 @@ interface PrisonerRepository : JpaRepository<Prisoner, Int>, JpaSpecificationExe
      WHERE PRISON_NUMBER IN (
        SELECT DISTINCT PRISON_NUMBER FROM HPA.ADDRESS_LOOKUP WHERE CONTAINS(ADDRESS_TEXT, :addressTerms)
      )
+       AND (:gender is null or SEX = :gender)
+       AND (:hdc is null or HAS_HDC = :hdc)
+       AND (:lifer is null or IS_LIFER = :lifer)
     ) NUMBERED_ROWS
     WHERE ROW_NUM = 1
     """,
     nativeQuery = true,
   )
-  fun findByAddresses(addressTerms: String, pageRequest: Pageable): Page<PrisonerSearchDto>
+  fun findByAddresses(
+    addressTerms: String,
+    gender: String?,
+    hdc: Boolean?,
+    lifer: Boolean?,
+    pageRequest: Pageable,
+  ): Page<PrisonerSearchDto>
 
   companion object {
     const val SELECT_CLAUSE = """

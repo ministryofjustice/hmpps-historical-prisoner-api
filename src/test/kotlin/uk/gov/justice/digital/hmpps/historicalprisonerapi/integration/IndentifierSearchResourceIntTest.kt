@@ -78,6 +78,34 @@ class IndentifierSearchResourceIntTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `should search by gender`() {
+      testHappyPath("prisonNumber=BF123459&gender=m") {
+        assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("BF123459")
+      }
+    }
+
+    @Test
+    fun `should ignore gender if blank`() {
+      testHappyPath("prisonNumber=BF123459&gender= ") {
+        assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("BF123459")
+      }
+    }
+
+    @Test
+    fun `should search by hdc`() {
+      testHappyPath("prisonNumber=BF123459&hdc=false") {
+        assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("BF123459")
+      }
+    }
+
+    @Test
+    fun `should search by lifer`() {
+      testHappyPath("prisonNumber=BF123459&lifer=false") {
+        assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("BF123459")
+      }
+    }
+
+    @Test
     fun `should return bad request when no identifiers provided`() {
       webTestClient.get()
         .uri("/identifiers")

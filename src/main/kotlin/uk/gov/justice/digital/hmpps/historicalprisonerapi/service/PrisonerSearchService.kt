@@ -11,11 +11,22 @@ import java.time.LocalDate
 class PrisonerSearchService(
   private val prisonerRepository: PrisonerRepository,
 ) {
-  fun findPrisoners(prisonNumber: String?, pnc: String?, cro: String?, pageRequest: Pageable): Page<PrisonerSearchDto> =
+  fun findPrisoners(
+    prisonNumber: String?,
+    pnc: String?,
+    cro: String?,
+    gender: String?,
+    hdc: Boolean?,
+    lifer: Boolean?,
+    pageRequest: Pageable,
+  ): Page<PrisonerSearchDto> =
     prisonerRepository.findByIdentifiers(
       prisonNumber = prisonNumber?.uppercaseTrimToNull(),
       pnc = pnc?.uppercaseTrimToNull(),
       cro = cro?.uppercaseTrimToNull(),
+      gender = gender?.uppercaseTrimToNull(),
+      hdc = hdc,
+      lifer = lifer,
       pageRequest = pageRequest,
     )
 
