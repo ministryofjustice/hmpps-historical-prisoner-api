@@ -14,6 +14,7 @@ data class PrisonerSearchImplDto(
   private val aliasLast: String? = null,
   private val aliasFirst: String? = null,
   private val aliasMiddle: String? = null,
+  private val aliasDob: LocalDate? = null,
 ) : PrisonerSearchDto {
   override fun getPrisonNumber(): String = prisonNumber
   override fun getReceptionDate(): LocalDate? = receptionDate
@@ -25,4 +26,5 @@ data class PrisonerSearchImplDto(
   override fun getAliasLast(): String? = aliasLast
   override fun getAliasFirst(): String? = aliasFirst
   override fun getAliasMiddle(): String? = aliasMiddle
+  override fun getAliasDob(): LocalDate? = aliasDob
 }

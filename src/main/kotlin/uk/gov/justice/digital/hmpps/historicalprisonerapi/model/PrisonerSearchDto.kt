@@ -13,4 +13,5 @@ interface PrisonerSearchDto {
   fun getAliasLast(): String?
   fun getAliasFirst(): String?
   fun getAliasMiddle(): String?
+  fun getAliasDob(): LocalDate?
 }

@@ -142,7 +142,8 @@ interface PrisonerRepository : JpaRepository<Prisoner, Int>, JpaSpecificationExe
               IS_ALIAS           AS isAlias,
               SURNAME            AS aliasLast,
               FORENAME_1         AS aliasFirst,
-              FORENAME_2         AS aliasMiddle
+              FORENAME_2         AS aliasMiddle,
+              BIRTH_DATE         AS aliasDob
         FROM (
         SELECT
           row_number()
