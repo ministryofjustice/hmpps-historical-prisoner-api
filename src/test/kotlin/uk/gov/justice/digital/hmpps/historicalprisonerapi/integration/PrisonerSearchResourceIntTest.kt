@@ -218,6 +218,7 @@ class PrisonerSearchResourceIntTest : IntegrationTestBase() {
         .jsonPath("$.content.[0].aliasLast").isEqualTo("SURNAMEA")
         .jsonPath("$.content.[0].aliasFirst").isEqualTo("FIRSTA")
         .jsonPath("$.content.[0].aliasMiddle").isEqualTo("MIDDLEA")
+        .jsonPath("$.content.[0].aliasDob").isEqualTo("1980-01-01")
     }
   }
 
