@@ -101,8 +101,8 @@ class PrisonerDetailResourceIntTest : IntegrationTestBase() {
         .jsonPath("$").value(PrisonerDetailDto::class.java) {
           assertThat(it.prisonNumber).isEqualTo("AB111111")
           assertThat(it.aliases).containsExactly(
-            AliasesDto(last = "ALIASA", first = "OTHERA", middle = "A", birthDate = "19800101"),
-            AliasesDto(last = "ALIASB", first = "OTHERB", middle = "B", birthDate = "19800102"),
+            AliasesDto(last = "ALIASA", first = "OTHERA", middle = "A", birthDate = LocalDate.parse("1980-01-01")),
+            AliasesDto(last = "ALIASB", first = "OTHERB", middle = "B", birthDate = LocalDate.parse("1980-01-02")),
           )
         }
     }
