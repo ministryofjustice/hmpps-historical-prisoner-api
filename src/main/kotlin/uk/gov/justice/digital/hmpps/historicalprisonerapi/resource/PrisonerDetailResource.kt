@@ -27,8 +27,7 @@ class PrisonerDetailResource(private val prisonerDetailService: PrisonerDetailSe
     responses = [
       ApiResponse(
         responseCode = "200",
-        description = "prisoner detail",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = PrisonerDetailDto::class))],
+        description = "Prisoner detail",
       ),
       ApiResponse(
         responseCode = "401",
@@ -47,6 +46,6 @@ class PrisonerDetailResource(private val prisonerDetailService: PrisonerDetailSe
       ),
     ],
   )
-  fun getDetail(@PathVariable prisonNumber: String): String =
+  fun getDetail(@PathVariable prisonNumber: String): PrisonerDetailDto =
     prisonerDetailService.getPrisonerDetail(prisonNumber)
 }

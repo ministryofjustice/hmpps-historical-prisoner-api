@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.AddressesDto
-import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.AdjudicationsDto
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.AliasesDto
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.CategoryDto
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.CourtHearingsDto
@@ -17,6 +16,7 @@ import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.OffencesInCustod
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.PersonalDetailsDto
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.PrisonerDetailDto
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.PunishmentDto
+import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.SentenceSummaryDto
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.SentencingDto
 import java.time.LocalDate
 
@@ -66,7 +66,7 @@ class PrisonerDetailResourceIntTest : IntegrationTestBase() {
         .expectBody()
         .jsonPath("$").value(PrisonerDetailDto::class.java) {
           assertThat(it.prisonNumber).isEqualTo("AB111111")
-          assertThat(it.personalDetails).isEqualTo(
+          assertThat(it.summary).isEqualTo(
             PersonalDetailsDto(
               prisonNumber = "AB111111",
               pncNumber = "012345/99A",
@@ -218,7 +218,7 @@ class PrisonerDetailResourceIntTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `should return adjudications`() {
+    fun `should return offences in custody`() {
       webTestClient.get()
         .uri("/detail/AB111111")
         .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
@@ -228,20 +228,20 @@ class PrisonerDetailResourceIntTest : IntegrationTestBase() {
         .expectBody()
         .jsonPath("$").value(PrisonerDetailDto::class.java) {
           assertThat(it.prisonNumber).isEqualTo("AB111111")
-          assertThat(it.adjudications).containsExactly(
-            AdjudicationsDto(
+          assertThat(it.offencesInCustody).containsExactly(
+            OffencesInCustodyDto(
               date = LocalDate.parse("1991-01-04"),
               outcome = "DISMISSED",
               charge = "ASSAULT ON INMATE",
               establishment = "FULL SUTTON",
             ),
-            AdjudicationsDto(
+            OffencesInCustodyDto(
               date = LocalDate.parse("1991-01-03"),
               outcome = "NOT PROCEEDED WITH",
               charge = "FIGHTING",
               establishment = "FRANKLAND",
             ),
-            AdjudicationsDto(
+            OffencesInCustodyDto(
               date = LocalDate.parse("1991-01-02"),
               outcome = "NOT PROVEN",
               charge = "OFFENCE AGAINST GOAD",
@@ -253,7 +253,7 @@ class PrisonerDetailResourceIntTest : IntegrationTestBase() {
                 ),
               ),
             ),
-            AdjudicationsDto(
+            OffencesInCustodyDto(
               date = LocalDate.parse("1991-01-01"),
               outcome = "PROVED",
               charge = "DISOBEYING A LAWFUL ORDER",
@@ -268,26 +268,6 @@ class PrisonerDetailResourceIntTest : IntegrationTestBase() {
                   duration = 7,
                 ),
               ),
-            ),
-          )
-        }
-    }
-
-    @Test
-    fun `should return category`() {
-      webTestClient.get()
-        .uri("/detail/AB111111")
-        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody()
-        .jsonPath("$").value(PrisonerDetailDto::class.java) {
-          assertThat(it.prisonNumber).isEqualTo("AB111111")
-          assertThat(it.category).isEqualTo(
-            CategoryDto(
-              date = LocalDate.parse("2001-01-02"),
-              category = "UNCATEGORISED (SENT MALES)",
             ),
           )
         }
@@ -397,46 +377,6 @@ class PrisonerDetailResourceIntTest : IntegrationTestBase() {
     }
 
     @Test
-    fun `should return offences in custody`() {
-      webTestClient.get()
-        .uri("/detail/AB111111")
-        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
-        .exchange()
-        .expectStatus()
-        .isOk
-        .expectBody()
-        .jsonPath("$").value(PrisonerDetailDto::class.java) {
-          assertThat(it.prisonNumber).isEqualTo("AB111111")
-          assertThat(it.offencesInCustody).containsExactly(
-            OffencesInCustodyDto(
-              date = LocalDate.parse("1991-01-04"),
-              charge = "ASSAULT ON INMATE",
-              outcome = "DISMISSED",
-              establishment = "FULL SUTTON",
-            ),
-            OffencesInCustodyDto(
-              date = LocalDate.parse("1991-01-03"),
-              charge = "FIGHTING",
-              outcome = "NOT PROCEEDED WITH",
-              establishment = "FRANKLAND",
-            ),
-            OffencesInCustodyDto(
-              date = LocalDate.parse("1991-01-02"),
-              charge = "POFFENCE AGAINST GOAD",
-              outcome = "NOT PROVEN",
-              establishment = "DURHAM",
-            ),
-            OffencesInCustodyDto(
-              date = LocalDate.parse("1991-01-01"),
-              charge = "DISOBEYING A LAWFUL ORDER",
-              outcome = "PROVED",
-              establishment = "BELMARSH",
-            ),
-          )
-        }
-    }
-
-    @Test
     fun `should return sentencing`() {
       webTestClient.get()
         .uri("/detail/AB111111")
@@ -480,6 +420,41 @@ class PrisonerDetailResourceIntTest : IntegrationTestBase() {
               CRD = LocalDate.parse("2004-01-01"),
               HDCAD = LocalDate.parse("2001-01-01"),
               HDCED = LocalDate.parse("2004-01-01"),
+            ),
+          )
+        }
+    }
+
+    @Test
+    fun `should return sentence summary`() {
+      webTestClient.get()
+        .uri("/detail/AB111111")
+        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
+        .exchange()
+        .expectStatus()
+        .isOk
+        .expectBody()
+        .jsonPath("$").value(PrisonerDetailDto::class.java) {
+          assertThat(it.prisonNumber).isEqualTo("AB111111")
+          assertThat(it.sentenceSummary).isEqualTo(
+            SentenceSummaryDto(
+              category = CategoryDto(
+                date = LocalDate.parse("2001-01-02"),
+                category = "UNCATEGORISED (SENT MALES)",
+              ),
+              establishment = "FRANKLAND",
+              courtHearing = CourtHearingsDto(
+                date = LocalDate.parse("2001-01-12"),
+                court = "LISKEARD COUNTY COURT",
+              ),
+              effectiveSentence = SentencingDto(
+                lengthDays = 3027,
+                changeDate = LocalDate.parse("2004-01-01"),
+                SED = LocalDate.parse("2006-01-01"),
+                LED = LocalDate.parse("2005-03-03"),
+                CRD = LocalDate.parse("2004-04-04"),
+                HDCED = LocalDate.parse("2004-03-03"),
+              ),
             ),
           )
         }
