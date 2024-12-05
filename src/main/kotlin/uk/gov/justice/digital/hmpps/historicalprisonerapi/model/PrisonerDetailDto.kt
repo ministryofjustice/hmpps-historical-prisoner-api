@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @JsonInclude(NON_NULL)
 data class PrisonerDetailModel(
   val prisonNumber: String?,
   val personalDetails: PersonalDetailsDto,
   val addresses: List<AddressesDto>?,
-  val aliases: List<AliasesDto>?,
+  val aliases: List<AliasesModel>?,
   val category: CategoryDto?,
   val courtHearings: List<CourtHearingsDto>?,
   val hdcInfo: List<HdcInfoDto>?,
@@ -28,7 +29,7 @@ data class PrisonerDetailModel(
       prisonNumber = prisonNumber,
       summary = personalDetails,
       addresses = addresses,
-      aliases = aliases,
+      aliases = aliases?.map { it.toDto() },
       courtHearings = courtHearings,
       hdcInfo = hdcInfo,
       hdcRecall = hdcRecall,
@@ -105,11 +106,22 @@ data class AddressesDto(
 )
 
 @JsonInclude(NON_NULL)
-data class AliasesDto(
+data class AliasesModel(
   val last: String?,
   val first: String?,
   val middle: String?,
   val birthDate: String?,
+) {
+  fun toDto(): AliasesDto =
+    AliasesDto(last = last, first = first, middle = middle, birthDate = if (!birthDate.isNullOrEmpty()) LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("yyyyMMdd")) else null)
+}
+
+@JsonInclude(NON_NULL)
+data class AliasesDto(
+  val last: String?,
+  val first: String?,
+  val middle: String?,
+  val birthDate: LocalDate?,
 )
 
 @JsonInclude(NON_NULL)
