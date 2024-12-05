@@ -53,10 +53,6 @@ data class PrisonerDetail(
   val offences: String? = null,
 
   @Lob
-  @Column(name = "OFFENCES_IN_CUSTODY")
-  val offencesInCustody: String? = null,
-
-  @Lob
   @Column(name = "SENTENCING")
   val sentencing: String? = null,
 
