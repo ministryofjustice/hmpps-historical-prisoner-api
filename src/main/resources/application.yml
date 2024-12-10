@@ -17,9 +17,10 @@ spring:
 
   jpa:
     properties.hibernate.default_schema: HPA
+    hibernate.naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
   datasource:
-    url: 'jdbc:sqlserver://${DATABASE_ENDPOINT};databaseName=${DATABASE_NAME};encrypt=true;clientCertificate=/app/global-bundle.pem'
+    url: 'jdbc:sqlserver://${DATABASE_ENDPOINT};databaseName=${DATABASE_NAME};encrypt=true;trustStore=/app/aws-certs.jks;trustStorePassword=changeit'
     username: '${DATABASE_USERNAME}'
     password: '${DATABASE_PASSWORD}'
 
