@@ -200,6 +200,26 @@ class PrisonerSearchResourceIntTest : IntegrationTestBase() {
     }
 
     @Test
+    fun `should return bad request when ageFrom is more than 10 years difference to ageTo`() {
+      webTestClient.get()
+        .uri("/search?ageFrom=10&ageTo=21")
+        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
+        .exchange()
+        .expectStatus()
+        .isBadRequest
+    }
+
+    @Test
+    fun `should pass when ageFrom is no more than 10 years difference to ageTo`() {
+      webTestClient.get()
+        .uri("/search?ageFrom=10&ageTo=20")
+        .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
+        .exchange()
+        .expectStatus()
+        .isOk
+    }
+
+    @Test
     fun `should return all fields`() {
       webTestClient.get()
         .uri("/search?forename=f&hdc=true")
