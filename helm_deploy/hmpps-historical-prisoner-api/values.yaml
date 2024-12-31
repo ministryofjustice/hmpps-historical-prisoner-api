@@ -46,3 +46,4 @@ generic-service:
 
 generic-prometheus-alerts:
   targetApplication: hmpps-historical-prisoner-api
+  alertSeverity: syscon
