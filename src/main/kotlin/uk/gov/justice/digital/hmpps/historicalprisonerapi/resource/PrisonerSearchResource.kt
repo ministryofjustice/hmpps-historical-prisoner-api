@@ -56,6 +56,9 @@ class PrisonerSearchResource(private val prisonerSearchService: PrisonerSearchSe
     if (forename.isNullOrBlank() && surname.isNullOrBlank() && dateOfBirth == null && ageFrom == null) {
       throw ValidationException("At least one search term must be provided")
     }
+    if (ageFrom != null && ageTo != null && ageTo - ageFrom > 10) {
+      throw ValidationException("Cannot search more than 10 years difference in age")
+    }
     return prisonerSearchService.findPrisoners(
       forename = forename,
       surname = surname,
