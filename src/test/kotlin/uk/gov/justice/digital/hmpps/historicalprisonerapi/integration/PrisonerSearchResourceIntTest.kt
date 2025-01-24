@@ -242,13 +242,12 @@ class PrisonerSearchResourceIntTest : IntegrationTestBase() {
     }
   }
 
-  private fun testHappyPath(parameters: String, function: (t: List<Prisoner>) -> Unit): WebTestClient.BodyContentSpec =
-    webTestClient.get()
-      .uri("/search?$parameters")
-      .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
-      .exchange()
-      .expectStatus()
-      .isOk
-      .expectBody()
-      .jsonPath("$.content").value(function)
+  private fun testHappyPath(parameters: String, function: (t: List<Prisoner>) -> Unit): WebTestClient.BodyContentSpec = webTestClient.get()
+    .uri("/search?$parameters")
+    .headers(setAuthorisation(roles = listOf("ROLE_HPA_USER")))
+    .exchange()
+    .expectStatus()
+    .isOk
+    .expectBody()
+    .jsonPath("$.content").value(function)
 }

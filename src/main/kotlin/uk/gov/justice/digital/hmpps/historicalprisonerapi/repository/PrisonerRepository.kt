@@ -11,7 +11,9 @@ import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.PrisonerSearchDt
 import java.time.LocalDate
 
 @Repository
-interface PrisonerRepository : JpaRepository<Prisoner, Int>, JpaSpecificationExecutor<Prisoner> {
+interface PrisonerRepository :
+  JpaRepository<Prisoner, Int>,
+  JpaSpecificationExecutor<Prisoner> {
 
   @Query(
     """

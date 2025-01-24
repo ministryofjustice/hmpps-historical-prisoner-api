@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.PrisonerDetail
 
 @Repository
-interface PrisonerDetailRepository : JpaRepository<PrisonerDetail, String>, JpaSpecificationExecutor<PrisonerDetail>
+interface PrisonerDetailRepository :
+  JpaRepository<PrisonerDetail, String>,
+  JpaSpecificationExecutor<PrisonerDetail>
