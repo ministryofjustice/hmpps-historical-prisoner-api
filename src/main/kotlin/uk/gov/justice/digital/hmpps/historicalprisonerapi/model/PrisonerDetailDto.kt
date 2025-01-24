@@ -112,8 +112,7 @@ data class AliasesModel(
   val middle: String?,
   val birthDate: String?,
 ) {
-  fun toDto(): AliasesDto =
-    AliasesDto(last = last, first = first, middle = middle, birthDate = if (!birthDate.isNullOrEmpty()) LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("yyyyMMdd")) else null)
+  fun toDto(): AliasesDto = AliasesDto(last = last, first = first, middle = middle, birthDate = if (!birthDate.isNullOrEmpty()) LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("yyyyMMdd")) else null)
 }
 
 @JsonInclude(NON_NULL)

@@ -46,6 +46,5 @@ class PrisonerDetailResource(private val prisonerDetailService: PrisonerDetailSe
       ),
     ],
   )
-  fun getDetail(@PathVariable prisonNumber: String): PrisonerDetailDto =
-    prisonerDetailService.getPrisonerDetail(prisonNumber)
+  fun getDetail(@PathVariable prisonNumber: String): PrisonerDetailDto = prisonerDetailService.getPrisonerDetail(prisonNumber)
 }

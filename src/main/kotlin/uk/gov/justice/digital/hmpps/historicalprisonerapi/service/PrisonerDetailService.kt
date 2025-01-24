@@ -14,10 +14,9 @@ class PrisonerDetailService(
   private val objectMapper: ObjectMapper,
 ) {
 
-  fun getPrisonerDetail(prisonNumber: String): PrisonerDetailDto =
-    prisonerDetailRepository.findByIdOrNull(prisonNumber)?.run {
-      objectMapper.readValue(
-        """{
+  fun getPrisonerDetail(prisonNumber: String): PrisonerDetailDto = prisonerDetailRepository.findByIdOrNull(prisonNumber)?.run {
+    objectMapper.readValue(
+      """{
         "prisonNumber": "$pkPrisonNumber",
         "personalDetails": $personalDetails,
         "aliases": $aliases,
@@ -31,7 +30,7 @@ class PrisonerDetailService(
         "adjudications": $adjudications,
         "sentencing": $sentencing
       }""",
-        PrisonerDetailModel::class.java,
-      ).toDto()
-    } ?: throw EntityNotFoundException("Prisoner $prisonNumber not found")
+      PrisonerDetailModel::class.java,
+    ).toDto()
+  } ?: throw EntityNotFoundException("Prisoner $prisonNumber not found")
 }
