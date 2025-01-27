@@ -21,16 +21,15 @@ class PrisonerSearchService(
     hdc: Boolean?,
     lifer: Boolean?,
     pageRequest: Pageable,
-  ): Page<PrisonerSearchDto> =
-    prisonerRepository.findByIdentifiers(
-      prisonNumber = prisonNumber?.uppercaseTrimToNull(),
-      pnc = pnc?.uppercaseTrimToNull(),
-      cro = cro?.uppercaseTrimToNull(),
-      gender = gender?.uppercaseTrimToNull(),
-      hdc = hdc,
-      lifer = lifer,
-      pageRequest = pageRequest,
-    )
+  ): Page<PrisonerSearchDto> = prisonerRepository.findByIdentifiers(
+    prisonNumber = prisonNumber?.uppercaseTrimToNull(),
+    pnc = pnc?.uppercaseTrimToNull(),
+    cro = cro?.uppercaseTrimToNull(),
+    gender = gender?.uppercaseTrimToNull(),
+    hdc = hdc,
+    lifer = lifer,
+    pageRequest = pageRequest,
+  )
 
   fun findPrisoners(
     forename: String?,
