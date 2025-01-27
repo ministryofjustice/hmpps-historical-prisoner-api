@@ -9,7 +9,6 @@ import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.Prisoner
 import java.time.LocalDate
 
 class PrisonerSearchResourceIntTest : IntegrationTestBase() {
-
   @Nested
   @DisplayName("GET /search")
   inner class SearchEndpoint {
@@ -129,7 +128,7 @@ class PrisonerSearchResourceIntTest : IntegrationTestBase() {
 
     @Test
     fun `should search by age with one term`() {
-      val age = LocalDate.now().year - LocalDate.parse("1987-01-01").year
+      val age = LocalDate.now(fixedClock).year - LocalDate.parse("1987-01-01").year
       testHappyPath("ageFrom=$age") {
         assertThat(it).hasSize(8).extracting("prisonNumber").containsOnly("DD000001", "DD000003", "DD000004", "DD000005", "DD000007", "DD000008", "DD000010", "DD000012")
       }
@@ -137,7 +136,7 @@ class PrisonerSearchResourceIntTest : IntegrationTestBase() {
 
     @Test
     fun `should search by age with range`() {
-      val age = LocalDate.now().year - LocalDate.parse("1955-01-01").year
+      val age = LocalDate.now(fixedClock).year - LocalDate.parse("1955-01-01").year
       testHappyPath("ageFrom=$age&ageTo=${age + 2}") {
         assertThat(it).hasSize(2).extracting("prisonNumber").containsOnly("BF123451", "BF123459")
       }
@@ -173,7 +172,7 @@ class PrisonerSearchResourceIntTest : IntegrationTestBase() {
 
     @Test
     fun `should search by all terms`() {
-      val age = LocalDate.now().year - LocalDate.parse("1980-01-01").year
+      val age = LocalDate.now(fixedClock).year - LocalDate.parse("1980-01-01").year
       testHappyPath("surname=Surn%&forename=F&dateOfBirth=1980-01-01&ageFrom=$age&ageTo=$age&gender=M&hdc=true&lifer=true") {
         assertThat(it).hasSize(1).extracting("prisonNumber").containsOnly("AB111111")
       }
