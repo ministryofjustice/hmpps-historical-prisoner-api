@@ -5,11 +5,13 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.PrisonerSearchDto
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.repository.PrisonerRepository
+import java.time.Clock
 import java.time.LocalDate
 
 @Service
 class PrisonerSearchService(
   private val prisonerRepository: PrisonerRepository,
+  private val clock: Clock,
 ) {
   fun findPrisoners(
     prisonNumber: String?,
@@ -62,7 +64,7 @@ class PrisonerSearchService(
       }
     } ?: Pair(null, null)
     val (birthDateFrom, birthDateTo) = ageFrom?.run {
-      val currentDate = LocalDate.now()
+      val currentDate = LocalDate.now(clock)
       val birthDateFrom = currentDate.minusYears((ageTo ?: ageFrom).toLong() + 1).plusDays(1)
       val birthDateTo = currentDate.minusYears(ageFrom.toLong())
       Pair(birthDateFrom, birthDateTo)
