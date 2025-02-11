@@ -18,3 +18,5 @@ generic-service:
 generic-prometheus-alerts:
   businessHoursOnly: true
   alertSeverity: syscon-nonprod
+  rdsAlertsDatabases:
+    cloud-platform-4bdb6c77965e5153: "historical prisoner"

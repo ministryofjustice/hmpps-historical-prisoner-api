@@ -6,3 +6,7 @@ generic-service:
   env:
     HMPPS_AUTH_URL: "https://sign-in.hmpps.service.justice.gov.uk/auth"
     DATABASE_NAME: "iis-prod"
+
+generic-prometheus-alerts:
+  rdsAlertsDatabases:
+    cloud-platform-7cf4b6d00ff4674a: "historical prisoner"
