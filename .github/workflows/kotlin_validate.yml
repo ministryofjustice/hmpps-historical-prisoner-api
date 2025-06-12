@@ -47,9 +47,8 @@ jobs:
       - name: publish test report
         uses: dorny/test-reporter@v2
         with:
-          artifact: test-results
           name: Test Results
-          path: '**/*.xml'
+          path: build/test-results/test/*.xml
           reporter: java-junit
       - name: upload the artifacts
         if: always()
