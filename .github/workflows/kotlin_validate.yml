@@ -73,5 +73,5 @@ jobs:
         with:
           name: JUnit Tests
           artifact: test-results
-          path: test-results/*.xml
+          path: test-results/build/**.xml
           reporter: java-junit
