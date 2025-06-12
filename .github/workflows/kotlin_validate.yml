@@ -53,9 +53,10 @@ jobs:
             build/test-results
             build/reports/tests
 
-      - name: Publish test report
+      - name: publish test report
         uses: dorny/test-reporter@v2
         with:
+          artifact: test-results
           name: JUnit Tests
-          path: build/test-results,build/reports/tests
+          path: 'build/**/*.html'
           reporter: java-junit
