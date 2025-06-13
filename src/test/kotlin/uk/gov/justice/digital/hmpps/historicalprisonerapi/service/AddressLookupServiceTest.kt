@@ -36,7 +36,7 @@ class AddressLookupServiceTest {
     assertThat(foundPrisoners).containsExactlyInAnyOrderElementsOf(expectedPrisoners)
 
     verify(prisonerRepository).findByAddresses(
-      addressTerms = "NEAR((John, Smith), 5, TRUE)",
+      addressTerms = "NEAR((John, Smith2), 5, TRUE)",
       gender = "Y",
       hdc = false,
       lifer = true,
