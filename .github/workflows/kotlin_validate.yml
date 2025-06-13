@@ -44,13 +44,6 @@ jobs:
         run: |
           export JAVA_OPTS="${{ inputs.java_options }}"
           ./gradlew check
-      - name: publish test report
-        uses: dorny/test-reporter@v2
-        with:
-          artifact: test-results
-          name: Test Results
-          path: '**/*.xml'
-          reporter: java-junit
       - name: upload the artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -59,3 +52,11 @@ jobs:
           path: |
             build/test-results
             build/reports/tests
+      - name: publish test report
+        uses: dorny/test-reporter@v2
+        with:
+          artifact: test-results
+          name: Test Results
+          path: '**/*.xml'
+          reporter: java-junit
+
