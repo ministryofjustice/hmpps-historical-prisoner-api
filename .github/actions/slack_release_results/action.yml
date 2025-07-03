@@ -22,8 +22,7 @@ inputs:
     required: true
   k8s_deployment_name:
     description: "Kubernetes deployment name"
-    required: false
-    default: ${{ github.event.repository.name }}
+    required: true
 
 runs:
   using: "composite"
