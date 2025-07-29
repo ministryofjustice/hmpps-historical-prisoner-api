@@ -36,6 +36,9 @@ jobs:
     name: Run the tests
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/gradle_verify.yml@v2 # WORKFLOW_VERSION
     secrets: inherit
+    with:
+      gradle-command: './gradlew assemble check'
+      upload-build-artifacts: true
   build:
     name: Build docker image from hmpps-github-actions
     if: github.ref == 'refs/heads/main'
@@ -45,16 +48,16 @@ jobs:
     with:
       docker_registry: 'ghcr.io'
       registry_org: 'ministryofjustice'
-      additional_docker_tag: ""
+      additional_docker_tag: ${{ inputs.additional_docker_tag }}
       push: ${{ inputs.push || true }}
       docker_multiplatform: false
-      additional_docker_build_args: ""
+      download_build_artifacts: true
   deploy_dev:
     name: Deploy to the dev environment
     if: github.ref == 'refs/heads/main'
     needs:
-    - build
-    - helm_lint
+      - build
+      - helm_lint
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2 # WORKFLOW_VERSION
     secrets: inherit
     with:
@@ -63,9 +66,9 @@ jobs:
   deploy_preprod:
     name: Deploy to the preprod environment
     needs:
-    - build
-    - helm_lint
-    - deploy_dev
+      - build
+      - helm_lint
+      - deploy_dev
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2 # WORKFLOW_VERSION
     secrets: inherit
     with:
@@ -74,9 +77,9 @@ jobs:
   deploy_prod:
     name: Deploy to the prod environment
     needs:
-    - build
-    - helm_lint
-    - deploy_preprod
+      - build
+      - helm_lint
+      - deploy_preprod
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2 # WORKFLOW_VERSION
     secrets: inherit
     with:
