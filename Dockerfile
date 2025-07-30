@@ -4,7 +4,7 @@ ARG BUILD_NUMBER
 ENV BUILD_NUMBER=${BUILD_NUMBER:-1_0_0}
 
 WORKDIR /builder
-COPY hmpps-historical-prisoner-api-*.jar app.jar
+COPY hmpps-historical-prisoner-api-${BUILD_NUMBER}.jar app.jar
 RUN java -Djarmode=tools -jar app.jar extract --layers --destination extracted
 
 ADD --chown=appuser:appgroup https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem ./global-bundle.pem
