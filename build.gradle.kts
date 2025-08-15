@@ -1,7 +1,7 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "8.3.5"
-  kotlin("plugin.spring") version "2.2.0"
-  kotlin("plugin.jpa") version "2.2.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "8.3.6"
+  kotlin("plugin.spring") version "2.2.10"
+  kotlin("plugin.jpa") version "2.2.10"
 }
 
 configurations {
@@ -9,7 +9,7 @@ configurations {
 }
 
 dependencies {
-  runtimeOnly("com.microsoft.sqlserver:mssql-jdbc:13.1.1.jre11-preview")
+  runtimeOnly("com.microsoft.sqlserver:mssql-jdbc:13.2.0.jre11")
   runtimeOnly("com.zaxxer:HikariCP")
   runtimeOnly("com.h2database:h2:2.3.232")
   runtimeOnly("org.flywaydb:flyway-sqlserver")
