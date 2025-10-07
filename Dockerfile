@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM eclipse-temurin:21-jre-jammy AS builder
+FROM --platform=$BUILDPLATFORM eclipse-temurin:25-jre-jammy AS builder
 
 ARG BUILD_NUMBER
 ENV BUILD_NUMBER=${BUILD_NUMBER:-1_0_0}
@@ -11,7 +11,7 @@ ADD --chown=appuser:appgroup https://truststore.pki.rds.amazonaws.com/global/glo
 COPY ./split-pem.bash split-pem.bash
 RUN ./split-pem.bash global-bundle.pem aws-certs.jks
 
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:25-jre-jammy
 LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
 
 ARG BUILD_NUMBER
