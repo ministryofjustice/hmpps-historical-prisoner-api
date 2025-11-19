@@ -13,3 +13,7 @@ CVE-2022-45868
 # Suppression for tomcat vulnerability affecting jsp compilation in the default servlet
 #   can be suppressed as we do not use the default servlet and haven't configured it for write either
 CVE-2024-50379
+# Suppression for false positive for mssql-jdbc
+#   can be suppressed as we are already at the fix version, just trivy doesn't recognise that.
+#   See https://github.com/aquasecurity/trivy/discussions/9745 for further information.
+CVE-2025-59250
