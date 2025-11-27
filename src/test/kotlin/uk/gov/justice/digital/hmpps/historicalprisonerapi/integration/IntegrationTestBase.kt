@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Primary
@@ -23,6 +24,7 @@ import java.time.ZoneId
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
 @Import(FixedClockConfig::class)
+@AutoConfigureWebTestClient
 abstract class IntegrationTestBase {
 
   @Autowired
