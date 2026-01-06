@@ -14,10 +14,6 @@ spring:
 
   jackson:
     date-format: "yyyy-MM-dd HH:mm:ss"
-  jackson2:
-    date-format: "yyyy-MM-dd HH:mm:ss"
-    serialization:
-      WRITE_DATES_AS_TIMESTAMPS: false
 
   jpa:
     properties.hibernate.default_schema: HPA

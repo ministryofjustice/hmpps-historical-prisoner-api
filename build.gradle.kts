@@ -4,6 +4,12 @@ plugins {
   kotlin("plugin.jpa") version "2.3.0"
 }
 
+configurations {
+  implementation {
+    exclude(group = "com.fasterxml.jackson.module", module = "jackson-module-kotlin")
+  }
+}
+
 dependencies {
   runtimeOnly("com.microsoft.sqlserver:mssql-jdbc:13.3.0.jre11-preview")
   runtimeOnly("com.zaxxer:HikariCP")
@@ -16,7 +22,6 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-jdbc")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-flyway")
-  implementation("org.springframework.boot:spring-boot-jackson2")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")
 
   testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:2.0.0")

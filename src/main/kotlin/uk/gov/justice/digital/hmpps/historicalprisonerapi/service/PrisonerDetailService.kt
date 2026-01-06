@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.historicalprisonerapi.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import tools.jackson.databind.ObjectMapper
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.PrisonerDetailDto
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.PrisonerDetailModel
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.repository.PrisonerDetailRepository
