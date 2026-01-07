@@ -1,4 +1,5 @@
-FROM --platform=$BUILDPLATFORM eclipse-temurin:25-jre-jammy AS builder
+ARG BASE_IMAGE=ghcr.io/ministryofjustice/hmpps-eclipse-temurin:25-jre-jammy
+FROM --platform=$BUILDPLATFORM ${BASE_IMAGE} AS builder
 
 ARG BUILD_NUMBER
 ENV BUILD_NUMBER=${BUILD_NUMBER:-1_0_0}
@@ -11,21 +12,10 @@ ADD --chown=appuser:appgroup https://truststore.pki.rds.amazonaws.com/global/glo
 COPY ./split-pem.bash split-pem.bash
 RUN ./split-pem.bash global-bundle.pem aws-certs.jks
 
-FROM eclipse-temurin:25-jre-jammy
-LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
+FROM ${BASE_IMAGE}
 
 ARG BUILD_NUMBER
 ENV BUILD_NUMBER=${BUILD_NUMBER:-1_0_0}
-
-RUN apt-get update && \
-    apt-get -y upgrade && \
-    rm -rf /var/lib/apt/lists/*
-
-ENV TZ=Europe/London
-RUN ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime && echo "$TZ" > /etc/timezone
-
-RUN addgroup --gid 2000 --system appgroup && \
-    adduser --uid 2000 --system appuser --gid 2000
 
 WORKDIR /app
 COPY --chown=appuser:appgroup applicationinsights.json ./
@@ -37,7 +27,5 @@ COPY --from=builder --chown=appuser:appgroup /builder/extracted/dependencies/ ./
 COPY --from=builder --chown=appuser:appgroup /builder/extracted/spring-boot-loader/ ./
 COPY --from=builder --chown=appuser:appgroup /builder/extracted/snapshot-dependencies/ ./
 COPY --from=builder --chown=appuser:appgroup /builder/extracted/application/ ./
-
-USER 2000
 
 ENTRYPOINT ["java", "-XX:+AlwaysActAsServerClassMachine", "-javaagent:agent.jar", "-jar", "app.jar"]
