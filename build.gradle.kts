@@ -4,12 +4,6 @@ plugins {
   kotlin("plugin.jpa") version "2.3.0"
 }
 
-configurations {
-  implementation {
-    exclude(group = "com.fasterxml.jackson.module", module = "jackson-module-kotlin")
-  }
-}
-
 dependencies {
   runtimeOnly("com.microsoft.sqlserver:mssql-jdbc:13.3.0.jre11-preview")
   runtimeOnly("com.zaxxer:HikariCP")
