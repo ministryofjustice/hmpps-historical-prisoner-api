@@ -12,9 +12,6 @@ spring:
   flyway:
     enabled: false
 
-  jackson:
-    date-format: "yyyy-MM-dd HH:mm:ss"
-
   jpa:
     properties.hibernate.default_schema: HPA
     hibernate.naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl

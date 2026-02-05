@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.historicalprisonerapi.service
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import tools.jackson.databind.ObjectMapper
+import tools.jackson.databind.json.JsonMapper
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.PrisonerDetailDto
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.model.PrisonerDetailModel
 import uk.gov.justice.digital.hmpps.historicalprisonerapi.repository.PrisonerDetailRepository
@@ -11,11 +11,11 @@ import uk.gov.justice.digital.hmpps.historicalprisonerapi.repository.PrisonerDet
 @Service
 class PrisonerDetailService(
   private val prisonerDetailRepository: PrisonerDetailRepository,
-  private val objectMapper: ObjectMapper,
+  private val jsonMapper: JsonMapper,
 ) {
 
   fun getPrisonerDetail(prisonNumber: String): PrisonerDetailDto = prisonerDetailRepository.findByIdOrNull(prisonNumber)?.run {
-    objectMapper.readValue(
+    jsonMapper.readValue(
       """{
         "prisonNumber": "$pkPrisonNumber",
         "personalDetails": $personalDetails,
