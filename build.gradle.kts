@@ -16,10 +16,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-jdbc")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-flyway")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2")
-  constraints {
-    implementation("org.webjars:swagger-ui:5.32.2")
-  }
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
 
   testImplementation("uk.gov.justice.service.hmpps:hmpps-kotlin-spring-boot-starter-test:2.1.0")
   testImplementation("org.springframework.boot:spring-boot-starter-webclient-test")
