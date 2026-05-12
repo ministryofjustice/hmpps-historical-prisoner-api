@@ -1,6 +1,7 @@
 generic-service:
   nameOverride: hmpps-historical-prisoner-api
   productId: "DPS065"
+  cronPrefixName: api
   replicaCount: 4
 
   image:
