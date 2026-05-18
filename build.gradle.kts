@@ -4,6 +4,10 @@ plugins {
   kotlin("plugin.jpa") version "2.3.21"
 }
 
+dependencyCheck {
+  suppressionFiles.add("azure-dependency-check-suppress.xml")
+}
+
 dependencies {
   runtimeOnly("com.microsoft.sqlserver:mssql-jdbc:13.4.0.jre11")
   runtimeOnly("com.zaxxer:HikariCP")
