@@ -15,7 +15,7 @@ generic-service:
 
   scheduledDowntime:
     enabled: true
-    startup: '32 6 * * 1-5' # Start at 6.32am UTC Monday-Friday
+    startupOverride: '32 6 * * 1-5' # Start at 6.32am UTC Monday-Friday
     shutdown: '42 21 * * 1-5' # Stop at 9.42pm UTC Monday-Friday
 
 generic-prometheus-alerts:
