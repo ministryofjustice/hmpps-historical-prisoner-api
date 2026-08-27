@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-  runtimeOnly("com.microsoft.sqlserver:mssql-jdbc:13.5.1.jre11-preview")
+  runtimeOnly("com.microsoft.sqlserver:mssql-jdbc:13.4.0.jre11")
   runtimeOnly("com.zaxxer:HikariCP")
   runtimeOnly("com.h2database:h2:2.4.240")
   runtimeOnly("org.flywaydb:flyway-sqlserver")
